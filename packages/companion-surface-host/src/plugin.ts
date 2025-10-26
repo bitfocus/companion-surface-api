@@ -210,7 +210,7 @@ export class PluginWrapper<TInfo = unknown> {
 			supportsBrightness: surface.registerProps.brightness,
 			surfaceLayout: surface.registerProps.surfaceLayout,
 			transferVariables: surface.registerProps.transferVariables ?? null,
-			location: null, // Not applicable for local surfaces
+			location: surface.registerProps.location ?? null,
 		}
 	}
 
@@ -335,10 +335,20 @@ export class PluginWrapper<TInfo = unknown> {
 	async setupRemoteConnections(connectionInfos: RemoteSurfaceConnectionInfo[]): Promise<void> {
 		if (!this.#plugin.remote) throw new Error('Plugin does not support outbound connections')
 
+		this.#logger.info(`Setting up ${connectionInfos.length} remote connections:`)
+		for (const connectionInfo of connectionInfos) {
+			this.#logger.info(` - ${connectionInfo.connectionId} (${JSON.stringify(connectionInfo.config)})`)
+		}
+
 		await this.#plugin.remote.startConnections(connectionInfos)
 	}
 	async stopRemoteConnections(connectionIds: string[]): Promise<void> {
 		if (!this.#plugin.remote) throw new Error('Plugin does not support outbound connections')
+
+		this.#logger.info(`Stopping ${connectionIds.length} remote connections:`)
+		for (const connectionId of connectionIds) {
+			this.#logger.info(` - ${connectionId}`)
+		}
 
 		await this.#plugin.remote.stopConnections(connectionIds)
 	}

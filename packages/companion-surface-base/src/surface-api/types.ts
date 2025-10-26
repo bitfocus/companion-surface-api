@@ -57,6 +57,11 @@ export interface SurfaceRegisterProps {
 	 * If the surface supports pincode entry, this is the desired arrangement of the pin entry buttons
 	 */
 	pincodeMap: SurfacePincodeMap | null
+
+	/**
+	 * A user facing location string for the surface
+	 */
+	location: string | null
 }
 
 export interface SurfaceRegisterPropsComplete extends SurfaceRegisterProps {
