@@ -64,11 +64,6 @@ export interface SurfaceRegisterProps {
 	location: string | null
 }
 
-export interface SurfaceRegisterPropsComplete extends SurfaceRegisterProps {
-	gridSize: GridSize
-	fallbackBitmapSize: number
-}
-
 export interface OpenSurfaceResult {
 	surface: SurfaceInstance
 	registerProps: SurfaceRegisterProps

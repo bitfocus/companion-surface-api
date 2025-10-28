@@ -1,36 +1,7 @@
-import type EventEmitter from 'node:events'
-import type { HIDDevice, OpenSurfaceResult, RemoteSurfaceConnectionInfo } from './types.js'
+import type { HIDDevice, OpenSurfaceResult } from './types.js'
 import type { SurfaceContext } from './context.js'
-import type { SomeCompanionInputField } from './input.js'
-
-export interface DiscoveredSurfaceInfo<TInfo> {
-	surfaceId: string
-	description: string
-	pluginInfo: TInfo
-}
-
-export interface SurfacePluginDetectionEvents<TInfo> {
-	surfacesAdded: [surfaceInfos: DiscoveredSurfaceInfo<TInfo>[]]
-	// surfacesRemoved: [surfaceIds: SurfaceId[]]
-}
-
-/**
- * For some plugins which only support using a builtin detection mechanism, this can be used to provide the detection info
- */
-export interface SurfacePluginDetection<TInfo> extends EventEmitter<SurfacePluginDetectionEvents<TInfo>> {
-	/**
-	 * Trigger this plugin to perform a scan for any connected surfaces.
-	 * This is used when the user triggers a scan, so should refresh any caches when possible
-	 */
-	triggerScan(): Promise<void>
-
-	/**
-	 * When a surface is discovered, but the application has chosen not to open it, this function is called to inform the detection mechanism
-	 * You can use this to cleanup any resources/handles for this surface, as it will not be used further
-	 * @param surfaceInfo The info about the surface which was rejected
-	 */
-	rejectSurface(surfaceInfo: DiscoveredSurfaceInfo<TInfo>): void
-}
+import type { SurfacePluginDetection } from './detection.js'
+import { SurfacePluginRemote } from './remote.js'
 
 /**
  * The base SurfacePlugin interface, for all surface plugins
@@ -92,38 +63,8 @@ export interface SurfacePlugin<TInfo> {
 	openSurface: (surfaceId: string, pluginInfo: TInfo, context: SurfaceContext) => Promise<OpenSurfaceResult>
 }
 
-export interface SurfacePluginRemoteEvents<TInfo> {
-	surfacesConnected: [surfaceInfos: DiscoveredSurfaceInfo<TInfo>[]]
-	// surfacesRemoved: [surfaceIds: SurfaceId[]]
-}
-
-/**
- * For some plugins which only support using a builtin detection mechanism, this can be used to provide the detection info
- */
-export interface SurfacePluginRemote<TInfo> extends EventEmitter<SurfacePluginRemoteEvents<TInfo>> {
-	/**
-	 * Get any configuration fields needed for configuring a remote connection
-	 *
-	 * Note: This gets called once during plugin initialisation. Changes made after this will not be detected
-	 */
-	readonly configFields: SomeCompanionInputField[]
-
-	/**
-	 * Setup one or more connections to remote surfaces
-	 * @param connectionInfos Info about the connections to add
-	 */
-	startConnections(connectionInfos: RemoteSurfaceConnectionInfo[]): Promise<void>
-
-	/**
-	 * Stop one or more connections to remote surfaces
-	 * @param connectionIds Ids of the connections to remove
-	 */
-	stopConnections(connectionIds: string[]): Promise<void>
-
-	/**
-	 * When a surface is discovered, but the application has chosen not to open it, this function is called to inform the detection mechanism
-	 * You can use this to cleanup any resources/handles for this surface, as it will not be used further
-	 * @param surfaceInfo The info about the surface which was rejected
-	 */
-	rejectSurface(surfaceInfo: DiscoveredSurfaceInfo<TInfo>): void
+export interface DiscoveredSurfaceInfo<TInfo> {
+	surfaceId: string
+	description: string
+	pluginInfo: TInfo
 }
