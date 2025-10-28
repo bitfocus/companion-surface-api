@@ -13,6 +13,7 @@ export {
 	SurfaceSchemaControlDefinition,
 	SurfaceSchemaControlStylePreset,
 	SurfaceSchemaBitmapConfig,
+	DiscoveredRemoteSurfaceInfo,
 	LogLevel,
 	createModuleLogger,
 	SurfaceFirmwareUpdateInfo,

@@ -75,6 +75,12 @@ export class PluginWrapper<TInfo = unknown> {
 					})
 				}
 			})
+			this.#plugin.remote.on('connectionsFound', (connectionInfos) => {
+				this.#host.connectionsFound(connectionInfos)
+			})
+			this.#plugin.remote.on('connectionsForgotten', (connectionIds) => {
+				this.#host.connectionsForgotten(connectionIds)
+			})
 		}
 
 		this.#logger.info('Initializing plugin')

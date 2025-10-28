@@ -1,4 +1,4 @@
-import type { SurfaceFirmwareUpdateInfo } from '@companion-surface/base'
+import type { DiscoveredRemoteSurfaceInfo, SurfaceFirmwareUpdateInfo } from '@companion-surface/base'
 import type { LockingGraphicsGenerator, HostCardGenerator } from './graphics.js'
 import type { CheckDeviceResult, OpenDeviceResult } from './types.js'
 
@@ -12,6 +12,9 @@ export interface SurfaceHostContext {
 
 	readonly shouldOpenDiscoveredSurface: (info: CheckDeviceResult) => Promise<boolean>
 	readonly notifyOpenedDiscoveredSurface: (info: OpenDeviceResult) => Promise<void>
+
+	readonly connectionsFound: (connectionInfos: DiscoveredRemoteSurfaceInfo[]) => void
+	readonly connectionsForgotten: (connectionIds: string[]) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type

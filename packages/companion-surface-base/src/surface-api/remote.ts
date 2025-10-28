@@ -1,11 +1,22 @@
 import type EventEmitter from 'node:events'
-import type { SomeCompanionInputField } from './input.js'
+import type { OptionsObject, SomeCompanionInputField } from './input.js'
 import type { RemoteSurfaceConnectionInfo } from './types.js'
 import type { DiscoveredSurfaceInfo } from './plugin.js'
 
 export interface SurfacePluginRemoteEvents<TInfo> {
 	surfacesConnected: [surfaceInfos: DiscoveredSurfaceInfo<TInfo>[]]
 	// surfacesRemoved: [surfaceIds: SurfaceId[]]
+
+	/**
+	 * Fired when surface discovery detects new surfaces
+	 * This is used as suggestions in the ui of remote surfaces the user can setup
+	 */
+	connectionsFound: [connectionInfos: DiscoveredRemoteSurfaceInfo[]]
+	/**
+	 * Fired when previously detected surfaces are forgotten
+	 * This is the opposite of connectionsFound, to forget any connections which are no longer available
+	 */
+	connectionsForgotten: [connectionIds: string[]]
 }
 
 /**
@@ -37,4 +48,28 @@ export interface SurfacePluginRemote<TInfo> extends EventEmitter<SurfacePluginRe
 	 * @param surfaceInfo The info about the surface which was rejected
 	 */
 	rejectSurface(surfaceInfo: DiscoveredSurfaceInfo<TInfo>): void
+}
+
+export interface DiscoveredRemoteSurfaceInfo {
+	/**
+	 * A unique id. This is used to identify the connection for updates and being forgotten
+	 */
+	id: string
+	/**
+	 * A user friendly name for the connection. Such as the hostname or user chosen name
+	 */
+	displayName: string
+	/**
+	 * A secondary description for the connection. Such as the model or device type
+	 */
+	description: string
+	// /**
+	//  * An address (if applicable) for the connection. Such as an IP or hostname
+	//  */
+	// addresses: string|null
+	/**
+	 * The configuration object to use for connecting to this remote surface.
+	 * This should match the schema defined with `configFields`, as once added it will be user editable with those fields
+	 */
+	config: OptionsObject
 }
