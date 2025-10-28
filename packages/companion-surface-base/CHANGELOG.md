@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.3.0...companion-surface-base-v0.3.1) (2025-10-28)
+
+
+### Bug Fixes
+
+* expose expression to check if remote connections match ([9071e5b](https://github.com/bitfocus/companion-surface-api/commit/9071e5b7082b4f47ffb21a9dfba893fb3d3681da))
+
 ## [0.3.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.2.0...companion-surface-base-v0.3.0) (2025-10-28)
 
 
