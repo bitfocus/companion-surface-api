@@ -26,9 +26,19 @@ export interface SurfacePluginRemote<TInfo> extends EventEmitter<SurfacePluginRe
 	/**
 	 * Get any configuration fields needed for configuring a remote connection
 	 *
-	 * Note: This gets called once during plugin initialisation. Changes made after this will not be detected
+	 * Note: This gets fetched once during plugin initialisation. Changes made after this will not be detected
 	 */
 	readonly configFields: SomeCompanionInputField[]
+
+	/**
+	 * An expression to use to check if two configs refer to the same remote surface connection.
+	 * Often this should not include every field, as some affect behaviour rather than the identity of the connection
+	 *
+	 * This uses the companion expression syntax, one object can be accessed like $(objA:address) and the other like $(objB:address)
+	 *
+	 * Note: This gets fetched once during plugin initialisation. Changes made after this will not be detected
+	 */
+	readonly checkConfigMatchesExpression: string | null
 
 	/**
 	 * Setup one or more connections to remote surfaces

@@ -13,6 +13,7 @@ export interface PluginFeatures {
 	supportsScan: boolean
 	supportsOutbound?: {
 		configFields: SomeCompanionInputField[]
+		configMatchesExpression: string | null
 	}
 }
 

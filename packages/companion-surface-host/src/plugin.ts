@@ -37,6 +37,7 @@ export class PluginWrapper<TInfo = unknown> {
 			supportsOutbound: this.#plugin.remote
 				? {
 						configFields: this.#plugin.remote.configFields,
+						configMatchesExpression: this.#plugin.remote.checkConfigMatchesExpression,
 					}
 				: undefined,
 		}
