@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v0.3.1...companion-surface-host-v0.4.0) (2025-11-01)
+
+
+### Features
+
+* custom surface config fields ([ea1a9b5](https://github.com/bitfocus/companion-surface-api/commit/ea1a9b5124f4a48c15292c86ec205ed87f715fab))
+* custom surface config fields ([21abdb6](https://github.com/bitfocus/companion-surface-api/commit/21abdb644ed8b814ee8aed36faa0af250445ccb3))
+
 ## [0.3.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v0.3.0...companion-surface-host-v0.3.1) (2025-10-28)
 
 
