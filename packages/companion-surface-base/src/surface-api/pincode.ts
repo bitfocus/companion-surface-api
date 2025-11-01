@@ -7,6 +7,7 @@ export type SurfacePincodeMap = SurfacePincodeMapPageSingle | SurfacePincodeMapP
 
 /**
  * An empty pincode map, for surfaces which do a custom pincode entry arrangement
+ * When using this, you should implement the `showLockedStatus` method on the SurfaceInstance to show the locked status
  */
 export interface SurfacePincodeMapCustom {
 	type: 'custom'

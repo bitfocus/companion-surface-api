@@ -56,8 +56,19 @@ export interface SurfaceInstance {
 	 */
 	draw(signal: AbortSignal, drawProps: SurfaceDrawProps): Promise<void>
 
+	/**
+	 * Called when one of the 'input' transfer variables changes value
+	 * @param name Name of the variable
+	 * @param value New value of the variable
+	 */
 	onVariableValue?(name: string, value: any): void
 
+	/**
+	 * Show the locked status of the surface for pincode entry
+	 * This is only used when the surface was registered with the `custom` pincode map
+	 * @param locked Whether the surface is locked. When false, this will be shortly followed by draw calls
+	 * @param characterCount The number of characters of the pincode which have been entered
+	 */
 	showLockedStatus?(locked: boolean, characterCount: number): void
 
 	/**

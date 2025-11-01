@@ -56,6 +56,7 @@ export interface SurfaceRegisterProps {
 	transferVariables?: Array<SurfaceInputVariable | SurfaceOutputVariable>
 	/**
 	 * If the surface supports pincode entry, this is the desired arrangement of the pin entry buttons
+	 * Set to null to disable pincode entry,
 	 */
 	pincodeMap: SurfacePincodeMap | null
 
