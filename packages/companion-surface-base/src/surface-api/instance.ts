@@ -28,7 +28,7 @@ export interface SurfaceInstance {
 	 * If there are any config fields defined, when the user updates the config, this is called to inform the surface of the new config
 	 * This will be called just before ready() with the initial config
 	 */
-	updateConfig?(config: Record<string, any>): void
+	updateConfig?(config: Record<string, any>): Promise<void>
 
 	/**
 	 * When the surface transitions into the ready state

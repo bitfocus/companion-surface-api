@@ -84,7 +84,7 @@ export class SurfaceProxy {
 
 	async updateConfig(config: Record<string, any>): Promise<void> {
 		if (this.#surface.updateConfig) {
-			this.#surface.updateConfig(config)
+			await this.#surface.updateConfig(config)
 		} else {
 			this.#logger.warn(`updateConfig not supported`)
 		}
