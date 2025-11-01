@@ -154,7 +154,7 @@ export class SurfaceProxy {
 		}
 
 		if (!this.#context.pincodeMap) {
-			this.#logger.warn(`Pincode layout not supported not supported`)
+			this.#logger.warn(`Pincode layout not supported`)
 			return
 		}
 
