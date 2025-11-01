@@ -50,7 +50,7 @@
 				"colors": {
 					"description": "If set, the control requests colours to be reported.",
 					"type": "string",
-					"enum": ["hex"]
+					"enum": ["hex", "rgb"]
 				}
 			},
 			"additionalProperties": false
