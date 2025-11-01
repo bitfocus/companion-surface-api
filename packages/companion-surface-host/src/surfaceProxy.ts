@@ -94,7 +94,7 @@ export class SurfaceProxy {
 		this.#drawQueue.abortQueued('reinit')
 
 		if (this.#surface.updateConfig) {
-			this.#surface.updateConfig(config)
+			await this.#surface.updateConfig(config)
 		}
 
 		return this.#surface.ready()
