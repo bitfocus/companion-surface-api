@@ -10,6 +10,7 @@ import type { OptionsObject, SomeCompanionInputField } from './input.js'
 export interface HIDDevice {
 	vendorId: number
 	productId: number
+	path: string
 	serialNumber?: string | undefined
 	manufacturer?: string | undefined
 	product?: string | undefined
