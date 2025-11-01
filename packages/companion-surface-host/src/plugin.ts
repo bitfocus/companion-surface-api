@@ -218,6 +218,7 @@ export class PluginWrapper<TInfo = unknown> {
 			surfaceLayout: surface.registerProps.surfaceLayout,
 			transferVariables: surface.registerProps.transferVariables ?? null,
 			location: surface.registerProps.location ?? null,
+			configFields: structuredClone(surface.registerProps.configFields) ?? null,
 		}
 	}
 
@@ -297,11 +298,18 @@ export class PluginWrapper<TInfo = unknown> {
 		surface.blankSurface()
 	}
 
-	async readySurface(surfaceId: string): Promise<void> {
+	async updateConfig(surfaceId: string, config: Record<string, any>): Promise<void> {
 		const surface = this.#openSurfaces.get(surfaceId)
 		if (!surface) throw new Error(`Surface with id ${surfaceId} is not opened`)
 
-		await surface.readySurface()
+		await surface.updateConfig(config)
+	}
+
+	async readySurface(surfaceId: string, config: Record<string, any>): Promise<void> {
+		const surface = this.#openSurfaces.get(surfaceId)
+		if (!surface) throw new Error(`Surface with id ${surfaceId} is not opened`)
+
+		await surface.readySurface(config)
 	}
 
 	async draw(surfaceId: string, drawProps: SurfaceDrawProps[]): Promise<void> {

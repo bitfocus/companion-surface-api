@@ -23,7 +23,13 @@ export interface CheckDeviceResult {
 }
 
 export interface OpenDeviceResult {
+	/**
+	 * A unique ID for this surface. This is typically in the format of `<product>:<serialNumber>`
+	 */
 	surfaceId: string
+	/**
+	 * A user-friendly name for this surface. This is often the product name
+	 */
 	description: string
 
 	/**
@@ -46,4 +52,9 @@ export interface OpenDeviceResult {
 	 * If not connected over a network, set to null
 	 */
 	location: string | null
+
+	/**
+	 * Any configuration fields for the surface
+	 */
+	configFields: SomeCompanionInputField[] | null
 }

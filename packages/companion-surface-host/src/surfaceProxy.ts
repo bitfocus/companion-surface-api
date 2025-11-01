@@ -82,8 +82,20 @@ export class SurfaceProxy {
 		this.showStatus(displayHost, status)
 	}
 
-	async readySurface(): Promise<void> {
+	async updateConfig(config: Record<string, any>): Promise<void> {
+		if (this.#surface.updateConfig) {
+			this.#surface.updateConfig(config)
+		} else {
+			this.#logger.warn(`updateConfig not supported`)
+		}
+	}
+
+	async readySurface(config: Record<string, any>): Promise<void> {
 		this.#drawQueue.abortQueued('reinit')
+
+		if (this.#surface.updateConfig) {
+			this.#surface.updateConfig(config)
+		}
 
 		return this.#surface.ready()
 	}

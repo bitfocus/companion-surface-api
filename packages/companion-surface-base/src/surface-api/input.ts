@@ -169,4 +169,9 @@ export interface CompanionInputFieldNumber extends CompanionInputFieldBase {
 	 * Note: values may not conform to this, it is a visual hint only
 	 */
 	max: number
+
+	/**
+	 * The step size for incrementing/decrementing the value
+	 */
+	step?: number
 }

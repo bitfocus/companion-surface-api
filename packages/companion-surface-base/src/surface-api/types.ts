@@ -1,7 +1,7 @@
 import type { SurfacePincodeMap } from './pincode.js'
 import type { SurfaceInstance } from './instance.js'
 import type { SurfaceSchemaLayoutDefinition } from '../../generated/surface-layout.d.ts'
-import type { OptionsObject } from './input.js'
+import type { OptionsObject, SomeCompanionInputField } from './input.js'
 
 /**
  * A representation of a HID device
@@ -62,6 +62,11 @@ export interface SurfaceRegisterProps {
 	 * A user facing location string for the surface
 	 */
 	location: string | null
+
+	/**
+	 * Any configuration fields for the surface
+	 */
+	configFields: SomeCompanionInputField[] | null
 }
 
 export interface OpenSurfaceResult {
