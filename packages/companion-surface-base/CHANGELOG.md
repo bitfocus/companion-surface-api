@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.4.1...companion-surface-base-v0.4.2) (2025-11-01)
+
+
+### Bug Fixes
+
+* restore rgb mode, it was valid ([d694b5f](https://github.com/bitfocus/companion-surface-api/commit/d694b5fa6c73d05316d83cd0e140e806ec95e528))
+
 ## [0.4.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.4.0...companion-surface-base-v0.4.1) (2025-11-01)
 
 
