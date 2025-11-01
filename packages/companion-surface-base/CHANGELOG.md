@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.4.0...companion-surface-base-v0.4.1) (2025-11-01)
+
+
+### Bug Fixes
+
+* drop unsupported colors mode ([765bd2b](https://github.com/bitfocus/companion-surface-api/commit/765bd2b759faa00372b1fdda8cc5b7b4cbf137d7))
+* missing hid path ([d62a51e](https://github.com/bitfocus/companion-surface-api/commit/d62a51eaaf012da23281585d98fadb0194883ab3))
+
 ## [0.4.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.3.1...companion-surface-base-v0.4.0) (2025-11-01)
 
 
