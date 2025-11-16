@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.5.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.4.2...companion-surface-base-v0.5.0) (2025-11-16)
+
+
+### Features
+
+* add usbIds to manifest schema ([3ce6278](https://github.com/bitfocus/companion-surface-api/commit/3ce62785146e2bd363fdfdfd6f0be3e9d9f5af59))
+
+
+### Bug Fixes
+
+* force host bump ([10ef9bc](https://github.com/bitfocus/companion-surface-api/commit/10ef9bc33b5c7a4fba8424eca23139b5b1f66eca))
+* missing manifest type exports ([b593404](https://github.com/bitfocus/companion-surface-api/commit/b5934044c3a482793e389406009b6df92daae864))
+
 ## [0.4.2](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.4.1...companion-surface-base-v0.4.2) (2025-11-01)
 
 
