@@ -106,6 +106,30 @@
 			"items": {
 				"type": "string"
 			}
+		},
+		"usbIds": {
+			"type": "array",
+			"description": "List of USB vendor and product IDs that the module supports. Your module will only be notified of devices matching these IDs.",
+			"uniqueItems": true,
+			"items": {
+				"type": "object",
+				"title": "SurfaceModuleManifestUsbIds",
+				"properties": {
+					"vendorId": {
+						"type": "integer"
+					},
+					"productIds": {
+						"type": "array",
+						"uniqueItems": true,
+						"items": {
+							"type": "integer"
+						},
+						"minItems": 1
+					}
+				},
+				"required": ["vendorId", "productIds"],
+				"additionalProperties": false
+			}
 		}
 	},
 	"required": [
@@ -121,6 +145,7 @@
 		"maintainers",
 		"runtime",
 		"products",
-		"keywords"
+		"keywords",
+		"usbIds"
 	]
 }

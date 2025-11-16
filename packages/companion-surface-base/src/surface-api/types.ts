@@ -11,13 +11,13 @@ export interface HIDDevice {
 	vendorId: number
 	productId: number
 	path: string
-	serialNumber?: string | undefined
-	manufacturer?: string | undefined
-	product?: string | undefined
+	serialNumber: string | undefined
+	manufacturer: string | undefined
+	product: string | undefined
 	release: number
 	interface: number
-	usagePage?: number | undefined
-	usage?: number | undefined
+	usagePage: number | undefined
+	usage: number | undefined
 }
 
 export type SurfaceId = string
