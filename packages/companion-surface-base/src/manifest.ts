@@ -1,13 +1,9 @@
-import type {
-	SurfaceModuleManifest,
-	SurfaceModuleManifestMaintainer,
-	SurfaceModuleManifestRuntime,
-} from '../generated/manifest.d.ts'
+import type { SurfaceModuleManifest } from '../generated/manifest.d.ts'
 // @ts-expect-error no typings
 // eslint-disable-next-line n/no-missing-import
 import validateSurfaceManifestSchema from '../generated/validate_manifest.js'
 
-export { SurfaceModuleManifest, SurfaceModuleManifestMaintainer, SurfaceModuleManifestRuntime }
+export type * from '../generated/manifest.d.ts'
 
 /** Validate that a manifest looks correctly populated */
 export function validateSurfaceManifest(manifest: SurfaceModuleManifest, looseChecks: boolean): void {
