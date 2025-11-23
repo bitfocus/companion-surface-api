@@ -130,6 +130,10 @@
 				"required": ["vendorId", "productIds"],
 				"additionalProperties": false
 			}
+		},
+		"allowMultipleInstances": {
+			"type": "boolean",
+			"description": "Whether multiple instances of this module can be run simultaneously"
 		}
 	},
 	"required": [
