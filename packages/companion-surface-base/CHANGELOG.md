@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.5.0...companion-surface-base-v0.6.0) (2025-11-23)
+
+
+### Features
+
+* add allowMultipleInstances field to manifest ([94bba80](https://github.com/bitfocus/companion-surface-api/commit/94bba800143308a1b8fd6ed1d56249b8fc8a432b))
+
 ## [0.5.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.4.2...companion-surface-base-v0.5.0) (2025-11-16)
 
 

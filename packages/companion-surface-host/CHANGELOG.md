@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v0.4.1...companion-surface-host-v0.4.2) (2025-11-23)
+
+
+### Bug Fixes
+
+* force host bump ([00a118b](https://github.com/bitfocus/companion-surface-api/commit/00a118bd446e5085b97d9cb1ed28d3a35ede3e91))
+
 ## [0.4.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v0.4.0...companion-surface-host-v0.4.1) (2025-11-16)
 
 
