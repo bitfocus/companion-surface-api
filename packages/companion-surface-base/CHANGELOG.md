@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.6.0...companion-surface-base-v0.6.1) (2025-11-24)
+
+
+### Bug Fixes
+
+* make serialnumber always defined, and add helper for generating unique serials ([2cfc41e](https://github.com/bitfocus/companion-surface-api/commit/2cfc41ed58487a5d0bab7b6c6aa110774b1bf907))
+
 ## [0.6.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.5.0...companion-surface-base-v0.6.0) (2025-11-23)
 
 
