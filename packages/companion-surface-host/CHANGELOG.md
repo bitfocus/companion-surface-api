@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.3](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v0.4.2...companion-surface-host-v0.4.3) (2025-11-25)
+
+
+### Bug Fixes
+
+* export StableDeviceIdGenerator from host lib ([4eecb0e](https://github.com/bitfocus/companion-surface-api/commit/4eecb0e1884eb5274daca5d18bae70b7c916e49c))
+
 ## [0.4.2](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v0.4.1...companion-surface-host-v0.4.2) (2025-11-23)
 
 

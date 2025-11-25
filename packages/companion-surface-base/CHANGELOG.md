@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.2](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.6.1...companion-surface-base-v0.6.2) (2025-11-25)
+
+
+### Bug Fixes
+
+* rework serialnumber generator to support tracking across runs ([c047e11](https://github.com/bitfocus/companion-surface-api/commit/c047e1139b535e4ecc8d15ff100b4006c5508363))
+
 ## [0.6.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.6.0...companion-surface-base-v0.6.1) (2025-11-24)
 
 
