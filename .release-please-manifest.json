@@ -1,4 +1,4 @@
 {
-	"packages/companion-surface-base": "0.6.2",
-	"packages/companion-surface-host": "0.4.3"
+	"packages/companion-surface-base": "0.7.0",
+	"packages/companion-surface-host": "0.5.0"
 }
