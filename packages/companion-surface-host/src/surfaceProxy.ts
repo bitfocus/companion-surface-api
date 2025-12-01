@@ -442,6 +442,12 @@ export class SurfaceProxyContext implements SurfaceContext {
 		this.#host.surfaceEvents.inputRotate(this.#surfaceId, controlId, 1)
 	}
 
+	changePage(forward: boolean): void {
+		if (this.#isLocked) return
+
+		this.#host.surfaceEvents.changePage(this.#surfaceId, forward)
+	}
+
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	sendVariableValue(variable: string, value: any): void {
 		if (this.#isLocked) return

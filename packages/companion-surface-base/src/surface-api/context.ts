@@ -17,5 +17,7 @@ export interface SurfaceContext {
 	rotateLeftById(controlId: string): void
 	rotateRightById(controlId: string): void
 
+	changePage(forward: boolean): void
+
 	sendVariableValue(variable: string, value: any): void
 }

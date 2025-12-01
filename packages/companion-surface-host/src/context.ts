@@ -28,6 +28,8 @@ export interface HostSurfaceEvents {
 	readonly inputPress: (surfaceId: string, controlId: string, pressed: boolean) => void
 	readonly inputRotate: (surfaceId: string, controlId: string, delta: number) => void
 
+	readonly changePage: (surfaceId: string, forward: boolean) => void
+
 	readonly setVariableValue: (surfaceId: string, name: string, value: any) => void
 
 	readonly pincodeEntry: (surfaceId: string, char: number) => void
