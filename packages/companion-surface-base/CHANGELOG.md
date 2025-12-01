@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.6.2...companion-surface-base-v0.7.0) (2025-12-01)
+
+
+### Features
+
+* surface changePage events ([8653bc1](https://github.com/bitfocus/companion-surface-api/commit/8653bc1e5210cf573bd764c5523d2654fbb75e57))
+
 ## [0.6.2](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.6.1...companion-surface-base-v0.6.2) (2025-11-25)
 
 
