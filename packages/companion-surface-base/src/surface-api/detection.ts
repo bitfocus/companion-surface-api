@@ -2,6 +2,7 @@ import type EventEmitter from 'node:events'
 import type { DiscoveredSurfaceInfo } from './plugin.js'
 
 export interface SurfacePluginDetectionEvents<TInfo> {
+	/** Emitted when surfaces are detected */
 	surfacesAdded: [surfaceInfos: DiscoveredSurfaceInfo<TInfo>[]]
 	// surfacesRemoved: [surfaceIds: SurfaceId[]]
 }

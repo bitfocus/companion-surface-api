@@ -63,8 +63,20 @@ export interface SurfacePlugin<TInfo> {
 	openSurface: (surfaceId: string, pluginInfo: TInfo, context: SurfaceContext) => Promise<OpenSurfaceResult>
 }
 
+/**
+ * Information about a discovered surface
+ */
 export interface DiscoveredSurfaceInfo<TInfo> {
+	/**
+	 * Unique id of the surface. Typically a serialnumber
+	 */
 	surfaceId: string
+	/**
+	 * Human friendly description of the surface. Typically a model name
+	 */
 	description: string
+	/**
+	 * Plugin specific info about the surface
+	 */
 	pluginInfo: TInfo
 }

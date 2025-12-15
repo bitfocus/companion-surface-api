@@ -11,8 +11,8 @@ export function validateSurfaceManifest(manifest: SurfaceModuleManifest, looseCh
 
 	if (!looseChecks) {
 		const manifestStr = JSON.stringify(manifest)
-		if (manifestStr.includes('companion-module-your-module-name'))
-			throw new Error(`Manifest incorrectly references template module 'companion-module-your-module-name'`)
+		if (manifestStr.includes('your-module-name'))
+			throw new Error(`Manifest incorrectly references template module 'your-module-name'`)
 
 		if (manifestStr.includes('module-shortname'))
 			throw new Error(`Manifest incorrectly references template module 'module-shortname'`)

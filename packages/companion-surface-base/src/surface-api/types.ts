@@ -27,12 +27,18 @@ export interface HIDDevice {
 export type SurfaceId = string
 export type ControlId = string
 
+/**
+ * Definition of a varaible produced by a surface
+ */
 export interface SurfaceInputVariable {
 	id: string
 	type: 'input'
 	name: string
 	description?: string
 }
+/**
+ * Definition of a varaible consumed by a surface
+ */
 export interface SurfaceOutputVariable {
 	id: string
 	type: 'output'
