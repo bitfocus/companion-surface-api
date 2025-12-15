@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.7.0...companion-surface-base-v1.0.0) (2025-12-15)
+
+
+### Features
+
+* publish 1.0 ([49bc303](https://github.com/bitfocus/companion-surface-api/commit/49bc3039a56d963d0b67a66e992dea47ff413bc7))
+
+
+### Miscellaneous Chores
+
+* release 1.0.0 ([5de1d61](https://github.com/bitfocus/companion-surface-api/commit/5de1d61537723348c736ed49168b88f116ac3919))
+
 ## [0.7.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.6.2...companion-surface-base-v0.7.0) (2025-12-01)
 
 
