@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.0.0...companion-surface-host-v1.0.1) (2025-12-30)
+
+
+### Bug Fixes
+
+* remove unused StableDeviceIdGenerator ([b237c01](https://github.com/bitfocus/companion-surface-api/commit/b237c01c2ff702c709c674444adce1a3fd8df271))
+
 ## [1.0.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v0.5.0...companion-surface-host-v1.0.0) (2025-12-15)
 
 
