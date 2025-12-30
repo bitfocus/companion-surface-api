@@ -19,5 +19,4 @@ export {
 	SurfaceFirmwareUpdateInfo,
 	HIDDevice,
 	SurfaceDrawProps,
-	StableDeviceIdGenerator,
 } from '@companion-surface/base'
