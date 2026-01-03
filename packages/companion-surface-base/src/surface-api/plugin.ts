@@ -50,7 +50,7 @@ export interface SurfacePlugin<TInfo> {
 	 * Perform a scan for devices, but not open them
 	 * Note: This should only be used if the plugin uses a protocol where we don't have other handling for
 	 */
-	scanForSurfaces?: () => Promise<DiscoveredSurfaceInfo<TInfo>[]>
+	scanForSurfaces?: () => Promise<DetectionSurfaceInfo<TInfo>[]>
 
 	/**
 	 * Open a discovered/known surface
@@ -68,7 +68,8 @@ export interface SurfacePlugin<TInfo> {
  */
 export interface DiscoveredSurfaceInfo<TInfo> {
 	/**
-	 * Unique id of the surface. Typically a serialnumber
+	 * Id of the surface. Typically a serialnumber
+	 * This does not have to be unique, if collisions are found it will be given a suffix to make it unique
 	 */
 	surfaceId: string
 	/**
@@ -79,4 +80,15 @@ export interface DiscoveredSurfaceInfo<TInfo> {
 	 * Plugin specific info about the surface
 	 */
 	pluginInfo: TInfo
+}
+
+/**
+ * Information about a discovered surface
+ */
+export interface DetectionSurfaceInfo<TInfo> extends DiscoveredSurfaceInfo<TInfo> {
+	/**
+	 * A stable unique identifier for the device.
+	 * Typically the device path if usb.
+	 */
+	deviceHandle: string
 }

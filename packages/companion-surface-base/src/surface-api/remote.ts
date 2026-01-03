@@ -1,10 +1,10 @@
 import type EventEmitter from 'node:events'
 import type { OptionsObject, SomeCompanionInputField } from './input.js'
 import type { RemoteSurfaceConnectionInfo } from './types.js'
-import type { DiscoveredSurfaceInfo } from './plugin.js'
+import type { DetectionSurfaceInfo, DiscoveredSurfaceInfo } from './plugin.js'
 
 export interface SurfacePluginRemoteEvents<TInfo> {
-	surfacesConnected: [surfaceInfos: DiscoveredSurfaceInfo<TInfo>[]]
+	surfacesConnected: [surfaceInfos: DetectionSurfaceInfo<TInfo>[]]
 	// surfacesRemoved: [surfaceIds: SurfaceId[]]
 
 	/**
