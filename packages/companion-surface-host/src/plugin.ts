@@ -2,7 +2,6 @@ import { SurfaceProxy, SurfaceProxyContext } from './surfaceProxy.js'
 import {
 	createModuleLogger,
 	type RemoteSurfaceConnectionInfo,
-	type DiscoveredSurfaceInfo,
 	type HIDDevice,
 	type OpenSurfaceResult,
 	type SurfaceDrawProps,
@@ -140,16 +139,10 @@ export class PluginWrapper<TInfo = unknown> {
 		if (!this.#plugin.checkSupportsHidDevice) return null
 
 		// Check if hid device is supported
-		let info = this.#plugin.checkSupportsHidDevice(hidDevice)
+		const info = this.#plugin.checkSupportsHidDevice(hidDevice)
 		if (!info) return null
 
-		// Inject the requested surfaceId
-		info = {
-			...info,
-			surfaceId,
-		}
-
-		return this.#openDeviceInner(info)
+		return this.#openDeviceInner(surfaceId, info.description, info.pluginInfo)
 	}
 
 	async #offerOpenDevice(
@@ -168,15 +161,17 @@ export class PluginWrapper<TInfo = unknown> {
 			surfaceId: info.surfaceId,
 			description: info.description,
 		})
-		this.#logger.info(`Discovered ${mode} surface: ${info.surfaceId}, ${info.description} (shouldOpen=${shouldOpen})`)
-		if (!shouldOpen) {
+		this.#logger.info(
+			`Discovered ${mode} surface: ${shouldOpen.resolvedSurfaceId}, ${info.description} (shouldOpen=${shouldOpen.shouldOpen})`,
+		)
+		if (!shouldOpen.shouldOpen) {
 			// Reject the surface
 			rejectFn(info)
 			return
 		}
 
 		// All clear, open it
-		const openInfo = await this.#openDeviceInner(info)
+		const openInfo = await this.#openDeviceInner(shouldOpen.resolvedSurfaceId, info.description, info.pluginInfo)
 		if (!openInfo) return
 
 		this.#logger.info(`Opened discovered ${mode} surface: ${openInfo.surfaceId}`)
@@ -188,26 +183,30 @@ export class PluginWrapper<TInfo = unknown> {
 		})
 	}
 
-	async #openDeviceInner(info: DiscoveredSurfaceInfo<TInfo>): Promise<OpenDeviceResult | null> {
-		if (this.#openSurfaces.has(info.surfaceId)) {
-			throw new Error(`Surface with id ${info.surfaceId} is already opened`)
+	async #openDeviceInner(
+		resolvedSurfaceId: string,
+		description: string,
+		pluginInfo: TInfo,
+	): Promise<OpenDeviceResult | null> {
+		if (this.#openSurfaces.has(resolvedSurfaceId)) {
+			throw new Error(`Surface with id ${resolvedSurfaceId} is already opened`)
 		}
-		this.#openSurfaces.set(info.surfaceId, null) // Mark as opening
+		this.#openSurfaces.set(resolvedSurfaceId, null) // Mark as opening
 
-		const surfaceContext = new SurfaceProxyContext(this.#host, info.surfaceId, (err) => {
+		const surfaceContext = new SurfaceProxyContext(this.#host, resolvedSurfaceId, (err) => {
 			this.#logger.error(`Surface error: ${err}`)
-			this.#cleanupSurfaceById(info.surfaceId)
+			this.#cleanupSurfaceById(resolvedSurfaceId)
 		})
 
 		// Open the surface
 		let surface: OpenSurfaceResult | undefined
 		try {
-			surface = await this.#plugin.openSurface(info.surfaceId, info.pluginInfo, surfaceContext)
+			surface = await this.#plugin.openSurface(resolvedSurfaceId, pluginInfo, surfaceContext)
 
 			await surface.surface.init()
 		} catch (e) {
 			// Remove from list as it has failed
-			this.#openSurfaces.delete(info.surfaceId)
+			this.#openSurfaces.delete(resolvedSurfaceId)
 
 			// Ensure surface is closed
 			if (surface) surface.surface?.close().catch(() => {}) // Ignore errors here
@@ -217,15 +216,15 @@ export class PluginWrapper<TInfo = unknown> {
 
 		// Wrap the surface
 		const wrapped = new SurfaceProxy(this.#host, surfaceContext, surface.surface, surface.registerProps)
-		this.#openSurfaces.set(info.surfaceId, wrapped)
+		this.#openSurfaces.set(resolvedSurfaceId, wrapped)
 
 		// Trigger a firmware update check
 		this.#firmwareUpdateCheck.triggerCheckSurfaceForUpdates(wrapped)
 
 		// The surface is now open, report back
 		return {
-			surfaceId: info.surfaceId,
-			description: info.description,
+			surfaceId: resolvedSurfaceId,
+			description: description,
 			supportsBrightness: surface.registerProps.brightness,
 			surfaceLayout: surface.registerProps.surfaceLayout,
 			transferVariables: surface.registerProps.transferVariables ?? null,
@@ -265,7 +264,7 @@ export class PluginWrapper<TInfo = unknown> {
 		// Disable when detection is enabled
 		if (this.#plugin.detection) return null
 
-		let cachedInfo = this.#lastScannedDevices.find((d) => d.deviceHandle === device.devicePath)
+		const cachedInfo = this.#lastScannedDevices.find((d) => d.deviceHandle === device.devicePath)
 
 		// Not found, return null
 		if (!cachedInfo) {
@@ -273,14 +272,9 @@ export class PluginWrapper<TInfo = unknown> {
 			return null
 		}
 
-		// Inject the requested surfaceId
-		cachedInfo = {
-			...cachedInfo,
-			surfaceId,
-		}
-		this.#logger.info(`Opening scanned device ${cachedInfo.surfaceId}`)
+		this.#logger.info(`Opening scanned device ${surfaceId}`)
 
-		return this.#openDeviceInner(cachedInfo)
+		return this.#openDeviceInner(surfaceId, cachedInfo.description, cachedInfo.pluginInfo)
 	}
 
 	#cleanupSurfaceById(surfaceId: string): void {
