@@ -95,7 +95,11 @@ export interface DiscoveredSurfaceInfo<TInfo> {
 export interface DetectionSurfaceInfo<TInfo> extends DiscoveredSurfaceInfo<TInfo> {
 	/**
 	 * A stable unique identifier for the device.
-	 * Typically the device path if usb.
+	 *
+	 * This is the same logical concept that other interfaces may refer to as `devicePath`,
+	 * but is named `deviceHandle` here because, depending on the transport or platform,
+	 * it may not literally be a filesystem path. For USB devices it will typically be the
+	 * device path, while for other transports it can be another stable identifier.
 	 */
 	deviceHandle: string
 }
