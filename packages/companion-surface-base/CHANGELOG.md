@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.0.0...companion-surface-base-v1.1.0) (2026-01-05)
+
+
+### Features
+
+* refine surfaceId generation ([#33](https://github.com/bitfocus/companion-surface-api/issues/33)) ([8f23f82](https://github.com/bitfocus/companion-surface-api/commit/8f23f8265fad79f31b243a2d67412b21935eadc2))
+
+
+### Bug Fixes
+
+* remove unused StableDeviceIdGenerator ([b237c01](https://github.com/bitfocus/companion-surface-api/commit/b237c01c2ff702c709c674444adce1a3fd8df271))
+
 ## [1.0.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v0.7.0...companion-surface-base-v1.0.0) (2025-12-15)
 
 
