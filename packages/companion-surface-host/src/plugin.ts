@@ -254,13 +254,17 @@ export class PluginWrapper<TInfo = unknown> {
 		// Cache these for when one is opened
 		this.#lastScannedDevices = results
 
-		return results.map((r) => ({
-			// This is always set in v1.1 and later, but is missing in earlier versions
-			devicePath: r.deviceHandle || r.surfaceId,
-			surfaceId: r.surfaceId,
-			surfaceIdIsNotUnique: !!r.surfaceIdIsNotUnique,
-			description: r.description,
-		}))
+		return (
+			results
+				.map((r) => ({
+					devicePath: r.deviceHandle,
+					surfaceId: r.surfaceId,
+					surfaceIdIsNotUnique: !!r.surfaceIdIsNotUnique,
+					description: r.description,
+				}))
+				// This is always set in v1.1 and later, but can be missing in earlier versions
+				.filter((r) => r.devicePath !== undefined)
+		)
 	}
 
 	async openScannedDevice(device: CheckDeviceResult, surfaceId: string): Promise<OpenDeviceResult | null> {
