@@ -90,7 +90,9 @@ export interface DiscoveredSurfaceInfo<TInfo> {
 }
 
 /**
- * Information about a discovered surface
+ * Information about a surface discovered via a detection/remote mechanism.
+ * Extends {@link DiscoveredSurfaceInfo} with a stable tracking handle (`deviceHandle`)
+ * that can be used to re-identify the same physical device between scans.
  */
 export interface DetectionSurfaceInfo<TInfo> extends DiscoveredSurfaceInfo<TInfo> {
 	/**
