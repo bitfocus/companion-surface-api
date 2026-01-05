@@ -127,6 +127,7 @@ export class PluginWrapper<TInfo = unknown> {
 		return {
 			devicePath: hidDevice.path,
 			surfaceId: info.surfaceId,
+			surfaceIdIsNotUnique: !!info.surfaceIdIsNotUnique,
 			description: info.description,
 		}
 	}
@@ -159,6 +160,7 @@ export class PluginWrapper<TInfo = unknown> {
 		const shouldOpen = await this.#host.shouldOpenDiscoveredSurface({
 			devicePath: info.deviceHandle,
 			surfaceId: info.surfaceId,
+			surfaceIdIsNotUnique: !!info.surfaceIdIsNotUnique,
 			description: info.description,
 		})
 		this.#logger.info(
@@ -256,6 +258,7 @@ export class PluginWrapper<TInfo = unknown> {
 			// This is always set in v1.1 and later, but is missing in earlier versions
 			devicePath: r.deviceHandle || r.surfaceId,
 			surfaceId: r.surfaceId,
+			surfaceIdIsNotUnique: !!r.surfaceIdIsNotUnique,
 			description: r.description,
 		}))
 	}

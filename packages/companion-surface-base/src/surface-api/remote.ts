@@ -1,7 +1,7 @@
 import type EventEmitter from 'node:events'
 import type { OptionsObject, SomeCompanionInputField } from './input.js'
 import type { RemoteSurfaceConnectionInfo } from './types.js'
-import type { DetectionSurfaceInfo, DiscoveredSurfaceInfo } from './plugin.js'
+import type { DetectionSurfaceInfo } from './plugin.js'
 
 export interface SurfacePluginRemoteEvents<TInfo> {
 	surfacesConnected: [surfaceInfos: DetectionSurfaceInfo<TInfo>[]]
@@ -57,7 +57,7 @@ export interface SurfacePluginRemote<TInfo> extends EventEmitter<SurfacePluginRe
 	 * You can use this to cleanup any resources/handles for this surface, as it will not be used further
 	 * @param surfaceInfo The info about the surface which was rejected
 	 */
-	rejectSurface(surfaceInfo: DiscoveredSurfaceInfo<TInfo>): void
+	rejectSurface(surfaceInfo: DetectionSurfaceInfo<TInfo>): void
 }
 
 export interface DiscoveredRemoteSurfaceInfo {

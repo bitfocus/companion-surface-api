@@ -68,10 +68,17 @@ export interface SurfacePlugin<TInfo> {
  */
 export interface DiscoveredSurfaceInfo<TInfo> {
 	/**
-	 * Id of the surface. Typically a serialnumber
+	 * Desired id of the surface. Typically a serialnumber.
+	 * It may not be opened with this id, as collisions may be resolved by the host
 	 * This does not have to be unique, if collisions are found it will be given a suffix to make it unique
 	 */
 	surfaceId: string
+	/**
+	 * Set this to true if the surface id is known to not be unique and should always be given a suffix
+	 * Otherwise, a suffix will only be added if a collision is detected
+	 */
+	surfaceIdIsNotUnique?: boolean
+
 	/**
 	 * Human friendly description of the surface. Typically a model name
 	 */
