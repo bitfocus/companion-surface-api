@@ -50,7 +50,7 @@ export interface SurfacePlugin<TInfo> {
 	 * Perform a scan for devices, but not open them
 	 * Note: This should only be used if the plugin uses a protocol where we don't have other handling for
 	 */
-	scanForSurfaces?: () => Promise<DiscoveredSurfaceInfo<TInfo>[]>
+	scanForSurfaces?: () => Promise<DetectionSurfaceInfo<TInfo>[]>
 
 	/**
 	 * Open a discovered/known surface
@@ -68,9 +68,17 @@ export interface SurfacePlugin<TInfo> {
  */
 export interface DiscoveredSurfaceInfo<TInfo> {
 	/**
-	 * Unique id of the surface. Typically a serialnumber
+	 * Desired id of the surface. Typically a serialnumber.
+	 * It may not be opened with this id, as collisions may be resolved by the host
+	 * This does not have to be unique, if collisions are found it will be given a suffix to make it unique
 	 */
 	surfaceId: string
+	/**
+	 * Set this to true if the surface id is known to not be unique and should always be given a suffix
+	 * Otherwise, a suffix will only be added if a collision is detected
+	 */
+	surfaceIdIsNotUnique?: boolean
+
 	/**
 	 * Human friendly description of the surface. Typically a model name
 	 */
@@ -79,4 +87,22 @@ export interface DiscoveredSurfaceInfo<TInfo> {
 	 * Plugin specific info about the surface
 	 */
 	pluginInfo: TInfo
+}
+
+/**
+ * Information about a surface discovered via a detection/remote mechanism.
+ * Extends {@link DiscoveredSurfaceInfo} with a stable tracking handle (`deviceHandle`)
+ * that can be used to re-identify the same physical device between scans.
+ */
+export interface DetectionSurfaceInfo<TInfo> extends DiscoveredSurfaceInfo<TInfo> {
+	/**
+	 * A stable unique identifier for the device.
+	 * This is used to identify the same physical device between scans and operations, until it is disconnected. It is not shown to the user
+	 *
+	 * This is the same logical concept that other interfaces may refer to as `devicePath`,
+	 * but is named `deviceHandle` here because, depending on the transport or platform,
+	 * it may not literally be a filesystem path. For USB devices it will typically be the
+	 * device path, while for other transports it can be another stable identifier.
+	 */
+	deviceHandle: string
 }

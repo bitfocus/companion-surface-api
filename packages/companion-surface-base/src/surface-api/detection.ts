@@ -1,10 +1,14 @@
 import type EventEmitter from 'node:events'
-import type { DiscoveredSurfaceInfo } from './plugin.js'
+import type { DetectionSurfaceInfo } from './plugin.js'
 
 export interface SurfacePluginDetectionEvents<TInfo> {
 	/** Emitted when surfaces are detected */
-	surfacesAdded: [surfaceInfos: DiscoveredSurfaceInfo<TInfo>[]]
-	// surfacesRemoved: [surfaceIds: SurfaceId[]]
+	surfacesAdded: [surfaceInfos: DetectionSurfaceInfo<TInfo>[]]
+	/**
+	 * Emitted when discovered surfaces are lost
+	 * Note: This is important to call, to allow the id to be reused by a newly detected surface later on
+	 */
+	surfacesRemoved: [deviceHandles: string[]]
 }
 
 /**
@@ -22,5 +26,5 @@ export interface SurfacePluginDetection<TInfo> extends EventEmitter<SurfacePlugi
 	 * You can use this to cleanup any resources/handles for this surface, as it will not be used further
 	 * @param surfaceInfo The info about the surface which was rejected
 	 */
-	rejectSurface(surfaceInfo: DiscoveredSurfaceInfo<TInfo>): void
+	rejectSurface(surfaceInfo: DetectionSurfaceInfo<TInfo>): void
 }

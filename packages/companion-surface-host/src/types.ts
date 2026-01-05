@@ -18,7 +18,9 @@ export interface PluginFeatures {
 }
 
 export interface CheckDeviceResult {
+	devicePath: string
 	surfaceId: string
+	surfaceIdIsNotUnique: boolean
 	description: string
 }
 
