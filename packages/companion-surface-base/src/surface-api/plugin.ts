@@ -97,6 +97,7 @@ export interface DiscoveredSurfaceInfo<TInfo> {
 export interface DetectionSurfaceInfo<TInfo> extends DiscoveredSurfaceInfo<TInfo> {
 	/**
 	 * A stable unique identifier for the device.
+	 * This is used to identify the same physical device between scans and operations, until it is disconnected. It is not shown to the user
 	 *
 	 * This is the same logical concept that other interfaces may refer to as `devicePath`,
 	 * but is named `deviceHandle` here because, depending on the transport or platform,
