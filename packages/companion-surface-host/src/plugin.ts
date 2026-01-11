@@ -301,6 +301,10 @@ export class PluginWrapper<TInfo = unknown> {
 		}
 	}
 
+	async closeDevice(surfaceId: string): Promise<void> {
+		this.#cleanupSurfaceById(surfaceId)
+	}
+
 	async setBrightness(surfaceId: string, brightness: number): Promise<void> {
 		const surface = this.#openSurfaces.get(surfaceId)
 		if (!surface) throw new Error(`Surface with id ${surfaceId} is not opened`)
