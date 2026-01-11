@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.1.1...companion-surface-host-v1.1.2) (2026-01-11)
+
+
+### Bug Fixes
+
+* report if connected surface is remote ([1d6f71e](https://github.com/bitfocus/companion-surface-api/commit/1d6f71ea3ca76b4e2d9c945b853a324e7cf0bace))
+
 ## [1.1.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.1.0...companion-surface-host-v1.1.1) (2026-01-11)
 
 
