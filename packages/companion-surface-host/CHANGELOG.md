@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.1.0...companion-surface-host-v1.1.1) (2026-01-11)
+
+
+### Bug Fixes
+
+* expose method to close surface ([61b9b81](https://github.com/bitfocus/companion-surface-api/commit/61b9b81f4fe802bed506de3a2be3f724a5d98de2))
+
 ## [1.1.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.0.0...companion-surface-host-v1.1.0) (2026-01-05)
 
 
