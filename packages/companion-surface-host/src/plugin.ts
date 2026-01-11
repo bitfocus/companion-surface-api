@@ -143,12 +143,12 @@ export class PluginWrapper<TInfo = unknown> {
 		const info = this.#plugin.checkSupportsHidDevice(hidDevice)
 		if (!info) return null
 
-		return this.#openDeviceInner(surfaceId, info.description, info.pluginInfo)
+		return this.#openDeviceInner(surfaceId, info.description, info.pluginInfo, false)
 	}
 
 	async #offerOpenDevice(
 		info: DetectionSurfaceInfo<TInfo>,
-		mode: string,
+		mode: 'detection' | 'outbound',
 		rejectFn: (info: DetectionSurfaceInfo<TInfo>) => void,
 	): Promise<void> {
 		if (this.#openSurfaces.has(info.surfaceId)) {
@@ -173,7 +173,12 @@ export class PluginWrapper<TInfo = unknown> {
 		}
 
 		// All clear, open it
-		const openInfo = await this.#openDeviceInner(shouldOpen.resolvedSurfaceId, info.description, info.pluginInfo)
+		const openInfo = await this.#openDeviceInner(
+			shouldOpen.resolvedSurfaceId,
+			info.description,
+			info.pluginInfo,
+			mode === 'outbound',
+		)
 		if (!openInfo) return
 
 		this.#logger.info(`Opened discovered ${mode} surface: ${openInfo.surfaceId}`)
@@ -189,6 +194,7 @@ export class PluginWrapper<TInfo = unknown> {
 		resolvedSurfaceId: string,
 		description: string,
 		pluginInfo: TInfo,
+		isRemote: boolean,
 	): Promise<OpenDeviceResult | null> {
 		if (this.#openSurfaces.has(resolvedSurfaceId)) {
 			throw new Error(`Surface with id ${resolvedSurfaceId} is already opened`)
@@ -231,6 +237,7 @@ export class PluginWrapper<TInfo = unknown> {
 			surfaceLayout: surface.registerProps.surfaceLayout,
 			transferVariables: surface.registerProps.transferVariables ?? null,
 			location: surface.registerProps.location ?? null,
+			isRemote,
 			configFields: structuredClone(surface.registerProps.configFields) ?? null,
 		}
 	}
@@ -281,7 +288,7 @@ export class PluginWrapper<TInfo = unknown> {
 
 		this.#logger.info(`Opening scanned device ${surfaceId}`)
 
-		return this.#openDeviceInner(surfaceId, cachedInfo.description, cachedInfo.pluginInfo)
+		return this.#openDeviceInner(surfaceId, cachedInfo.description, cachedInfo.pluginInfo, false)
 	}
 
 	#cleanupSurfaceById(surfaceId: string): void {

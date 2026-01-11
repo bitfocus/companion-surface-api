@@ -56,6 +56,11 @@ export interface OpenDeviceResult {
 	location: string | null
 
 	/**
+	 * Whether the surface is a remote surface (connected over network) or a local surface (connected via USB/HID/etc)
+	 */
+	isRemote: boolean
+
+	/**
 	 * Any configuration fields for the surface
 	 */
 	configFields: SomeCompanionInputField[] | null
