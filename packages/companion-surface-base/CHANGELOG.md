@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.1.1...companion-surface-base-v1.1.2) (2026-03-18)
+
+
+### Bug Fixes
+
+* force version bump ([fd38376](https://github.com/bitfocus/companion-surface-api/commit/fd383769d733bb403afd16161dc7fc8cfbca95da))
+
 ## [1.1.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.1.0...companion-surface-base-v1.1.1) (2026-03-18)
 
 
