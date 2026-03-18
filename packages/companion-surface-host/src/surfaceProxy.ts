@@ -18,7 +18,7 @@ import {
 } from '@companion-surface/base'
 import { DrawingState } from './internal/drawingState.js'
 import { SurfaceHostContext } from './context.js'
-import { getPixelFormat, getPixelFormatLength } from './util.js'
+import { getPixelFormat, getPixelFormatLength, BANNED_PROPS } from './util.js'
 import { SurfaceCardGeneratorProxy } from './internal/cardGenerator.js'
 import isEqual from 'fast-deep-equal'
 
@@ -127,6 +127,8 @@ export class SurfaceProxy {
 
 			const controlId = data.controlId
 
+			if (BANNED_PROPS.has(controlId)) throw new Error(`Control id "${controlId}" is a reserved word`)
+
 			const controlInfo = this.#registerProps.surfaceLayout.controls[controlId]
 			if (!controlInfo) throw new Error(`Received draw for unknown controlId: ${controlId}`)
 
@@ -136,6 +138,11 @@ export class SurfaceProxy {
 
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	onVariableValue(name: string, value: any): void {
+		if (BANNED_PROPS.has(name)) {
+			this.#logger.warn(`Variable name "${name}" is a reserved word`)
+			return
+		}
+
 		if (this.#surface.onVariableValue) {
 			this.#surface.onVariableValue(name, value)
 		} else {
@@ -249,6 +256,8 @@ export class SurfaceProxy {
 		color: string,
 		text: string,
 	) {
+		if (BANNED_PROPS.has(controlId)) return
+
 		const controlInfo = this.#registerProps.surfaceLayout.controls[controlId]
 
 		// Missing the control for some reason.. Probably using the old api.
@@ -286,6 +295,9 @@ export class SurfaceProxy {
 	}
 
 	#getStyleForPreset(stylePreset: string | undefined): SurfaceSchemaControlStylePreset {
+		if (stylePreset && BANNED_PROPS.has(stylePreset)) {
+			return this.#registerProps.surfaceLayout.stylePresets.default
+		}
 		return (
 			(stylePreset && this.#registerProps.surfaceLayout.stylePresets[stylePreset]) ||
 			this.#registerProps.surfaceLayout.stylePresets.default
@@ -371,6 +383,8 @@ export class SurfaceProxyContext implements SurfaceContext {
 	#getControlById(controlId: ControlId): SurfaceSchemaControlDefinition | null {
 		if (!this.#surface) throw new Error('Surface not set')
 
+		if (BANNED_PROPS.has(controlId)) return null
+
 		return this.#surface.registerProps.surfaceLayout.controls[controlId] ?? null
 	}
 
@@ -451,6 +465,11 @@ export class SurfaceProxyContext implements SurfaceContext {
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	sendVariableValue(variable: string, value: any): void {
 		if (this.#isLocked) return
+
+		if (BANNED_PROPS.has(variable)) {
+			this.#logger.warn(`Variable name "${variable}" is a reserved word`)
+			return
+		}
 
 		this.#host.surfaceEvents.setVariableValue(this.#surfaceId, variable, value)
 	}

@@ -11,6 +11,7 @@ import {
 import type { SurfaceHostContext } from './context.js'
 import type { PluginFeatures, CheckDeviceResult, OpenDeviceResult } from './types.js'
 import { FirmwareUpdateCheck } from './firmwareUpdateCheck.js'
+import { BANNED_PROPS } from './util.js'
 
 export class PluginWrapper<TInfo = unknown> {
 	readonly #logger = createModuleLogger('PluginWrapper')
@@ -80,10 +81,30 @@ export class PluginWrapper<TInfo = unknown> {
 				}
 			})
 			this.#plugin.remote.on('connectionsFound', (connectionInfos) => {
-				this.#host.connectionsFound(connectionInfos)
+				// Validate connection IDs before passing to host
+				const validConnectionInfos = connectionInfos.filter((info) => {
+					if (BANNED_PROPS.has(info.id)) {
+						this.#logger.warn(`Connection id "${info.id}" is a reserved word, ignoring`)
+						return false
+					}
+					return true
+				})
+				if (validConnectionInfos.length > 0) {
+					this.#host.connectionsFound(validConnectionInfos)
+				}
 			})
 			this.#plugin.remote.on('connectionsForgotten', (connectionIds) => {
-				this.#host.connectionsForgotten(connectionIds)
+				// Validate connection IDs before passing to host
+				const validConnectionIds = connectionIds.filter((id) => {
+					if (BANNED_PROPS.has(id)) {
+						this.#logger.warn(`Connection id "${id}" is a reserved word, ignoring`)
+						return false
+					}
+					return true
+				})
+				if (validConnectionIds.length > 0) {
+					this.#host.connectionsForgotten(validConnectionIds)
+				}
 			})
 		}
 
@@ -349,6 +370,8 @@ export class PluginWrapper<TInfo = unknown> {
 
 		// TODO - error handling
 		for (const props of drawProps) {
+			if (BANNED_PROPS.has(props.controlId)) throw new Error(`Control id "${props.controlId}" is a reserved word`)
+
 			const control = surface.registerProps.surfaceLayout.controls[props.controlId]
 			if (!control) throw new Error(`Control "${props.controlId}" does not exist on surface ${surfaceId}`)
 
@@ -360,6 +383,11 @@ export class PluginWrapper<TInfo = unknown> {
 	async onVariableValue(surfaceId: string, name: string, value: any): Promise<void> {
 		const surface = this.#openSurfaces.get(surfaceId)
 		if (!surface) throw new Error(`Surface with id ${surfaceId} is not opened`)
+
+		if (BANNED_PROPS.has(name)) {
+			this.#logger.warn(`Variable name "${name}" is a reserved word`)
+			return
+		}
 
 		surface.onVariableValue(name, value)
 	}

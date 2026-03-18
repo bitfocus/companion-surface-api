@@ -29,3 +29,14 @@ export function getPixelFormatLength(pixelFormat: SurfaceSchemaPixelFormat): num
 			throw new Error(`Unknown pixel format ${pixelFormat}`)
 	}
 }
+
+/** Properties that must never be used as control/style IDs to prevent prototype pollution */
+export const BANNED_PROPS = new Set([
+	'__proto__',
+	'constructor',
+	'prototype',
+	'__defineGetter__',
+	'__defineSetter__',
+	'__lookupGetter__',
+	'__lookupSetter__',
+])
