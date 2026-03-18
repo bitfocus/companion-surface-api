@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.1.2...companion-surface-host-v1.1.3) (2026-03-18)
+
+
+### Bug Fixes
+
+* ensure modules dont use a few reserved words as ids ([3fa36e0](https://github.com/bitfocus/companion-surface-api/commit/3fa36e019189e5a659bcac8e66bc2d59d69bcae2))
+
 ## [1.1.2](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.1.1...companion-surface-host-v1.1.2) (2026-01-11)
 
 

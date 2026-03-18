@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.1.0...companion-surface-base-v1.1.1) (2026-03-18)
+
+
+### Bug Fixes
+
+* validateManifest order of operations ([bf0e587](https://github.com/bitfocus/companion-surface-api/commit/bf0e587b160b02fb47a142375953e416df079ca8))
+
 ## [1.1.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.0.0...companion-surface-base-v1.1.0) (2026-01-05)
 
 
