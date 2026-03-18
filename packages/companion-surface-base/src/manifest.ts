@@ -7,7 +7,18 @@ export type * from '../generated/manifest.d.ts'
 
 /** Validate that a manifest looks correctly populated */
 export function validateSurfaceManifest(manifest: SurfaceModuleManifest, looseChecks: boolean): void {
+	if (!manifest || typeof manifest !== 'object') {
+		throw new Error(`Manifest is not an object`)
+	}
+
 	if (manifest.type !== 'surface') throw new Error(`Manifest 'type' must be 'surface'`)
+
+	if (!validateSurfaceManifestSchema(manifest)) {
+		const errors = validateSurfaceManifestSchema.errors
+		if (!errors) throw new Error(`Manifest failed validation with unknown reason`)
+
+		throw new Error(`Manifest validation failed: ${JSON.stringify(errors)}`)
+	}
 
 	if (!looseChecks) {
 		const manifestStr = JSON.stringify(manifest)
@@ -31,12 +42,5 @@ export function validateSurfaceManifest(manifest: SurfaceModuleManifest, looseCh
 
 		if (manifestStr.includes('Your product'))
 			throw new Error(`Manifest incorrectly references template module 'Your product'`)
-	}
-
-	if (!validateSurfaceManifestSchema(manifest)) {
-		const errors = validateSurfaceManifestSchema.errors
-		if (!errors) throw new Error(`Manifest failed validation with unknown reason`)
-
-		throw new Error(`Manifest validation failed: ${JSON.stringify(errors)}`)
 	}
 }
