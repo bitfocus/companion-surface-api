@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.1.2...companion-surface-base-v1.1.3) (2026-03-21)
+
+
+### Bug Fixes
+
+* remote surfaces should report address for ui purposes ([72fd7b3](https://github.com/bitfocus/companion-surface-api/commit/72fd7b3389521df2ba08d0f002e03ea7508864bd))
+
 ## [1.1.2](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.1.1...companion-surface-base-v1.1.2) (2026-03-18)
 
 
