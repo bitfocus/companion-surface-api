@@ -172,11 +172,6 @@ export class PluginWrapper<TInfo = unknown> {
 		mode: 'detection' | 'outbound',
 		rejectFn: (info: DetectionSurfaceInfo<TInfo>) => void,
 	): Promise<void> {
-		if (this.#openSurfaces.has(info.surfaceId)) {
-			// Already open, assume faulty detection logic
-			return
-		}
-
 		// Ask host if we should open this
 		const shouldOpen = await this.#host.shouldOpenDiscoveredSurface({
 			devicePath: info.deviceHandle,
@@ -189,6 +184,12 @@ export class PluginWrapper<TInfo = unknown> {
 		)
 		if (!shouldOpen.shouldOpen) {
 			// Reject the surface
+			rejectFn(info)
+			return
+		}
+
+		// Check if the deduplicated id is already open, if so reject as this is likely a detection issue
+		if (this.#openSurfaces.has(shouldOpen.resolvedSurfaceId)) {
 			rejectFn(info)
 			return
 		}
