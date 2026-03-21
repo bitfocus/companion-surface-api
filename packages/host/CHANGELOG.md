@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.1.4...companion-surface-host-v1.1.5) (2026-03-21)
+
+
+### Bug Fixes
+
+* unable to open discovered surfaces with id clash ([92fd676](https://github.com/bitfocus/companion-surface-api/commit/92fd676ff7b8f061b6cc59103dcd6c546157eb22))
+
 ## [1.1.4](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.1.3...companion-surface-host-v1.1.4) (2026-03-18)
 
 
