@@ -73,10 +73,11 @@ export interface DiscoveredRemoteSurfaceInfo {
 	 * A secondary description for the connection. Such as the model or device type
 	 */
 	description: string
-	// /**
-	//  * An address (if applicable) for the connection. Such as an IP or hostname
-	//  */
-	// addresses: string|null
+	/**
+	 * An address (if applicable) for the connection. Such as an IP or hostname
+	 * This is used for display purposes, not for connecting.
+	 */
+	addresses: string | null
 	/**
 	 * The configuration object to use for connecting to this remote surface.
 	 * This should match the schema defined with `configFields`, as once added it will be user editable with those fields
