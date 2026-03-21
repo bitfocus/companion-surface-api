@@ -73,10 +73,10 @@ jobs:
             # Manual dispatch - use input
             if [ "${{ github.event.inputs.package }}" = "base" ]; then
               PACKAGE_NAME="@companion-surface/base"
-              PACKAGE_PATH="packages/companion-surface-base"
+              PACKAGE_PATH="packages/base"
             else
               PACKAGE_NAME="@companion-surface/host"
-              PACKAGE_PATH="packages/companion-surface-host"
+              PACKAGE_PATH="packages/host"
             fi
             
             # Determine tag based on branch
@@ -102,11 +102,11 @@ jobs:
             if [[ "$TAG" == companion-surface-base-v* ]]; then
               PACKAGE_NAME="@companion-surface/base"
               PACKAGE_SHORT_NAME="base"
-              PACKAGE_PATH="packages/companion-surface-base"
+              PACKAGE_PATH="packages/base"
             elif [[ "$TAG" == companion-surface-host-v* ]]; then
               PACKAGE_NAME="@companion-surface/host"
               PACKAGE_SHORT_NAME="host"
-              PACKAGE_PATH="packages/companion-surface-host"
+              PACKAGE_PATH="packages/host"
             else
               echo "Unknown tag format: $TAG"
               exit 1

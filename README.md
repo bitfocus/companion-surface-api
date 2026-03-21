@@ -4,8 +4,8 @@ Monorepo for Companion surface plugin libraries.
 
 ## Packages
 
-- **[@companion-surface/base](packages/companion-surface-base/)** - Plugin API for writing surface integrations. Small, stable, versioned conservatively.
-- **[@companion-surface/host](packages/companion-surface-host/)** - Host-side wrapper that runs plugins in-process. Handles API version compatibility and provides the interface to Companion.
+- **[@companion-surface/base](packages/base/)** - Plugin API for writing surface integrations. Small, stable, versioned conservatively.
+- **[@companion-surface/host](packages/host/)** - Host-side wrapper that runs plugins in-process. Handles API version compatibility and provides the interface to Companion.
 
 ## Development
 

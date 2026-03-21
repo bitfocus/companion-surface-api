@@ -74,9 +74,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@companion-surface/base@workspace:packages/companion-surface-base, @companion-surface/base@workspace:~":
+"@companion-surface/base@workspace:packages/base, @companion-surface/base@workspace:~":
   version: 0.0.0-use.local
-  resolution: "@companion-surface/base@workspace:packages/companion-surface-base"
+  resolution: "@companion-surface/base@workspace:packages/base"
   dependencies:
     ajv: "npm:^8.18.0"
     tslib: "npm:^2.8.1"
@@ -84,9 +84,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@companion-surface/host@workspace:packages/companion-surface-host":
+"@companion-surface/host@workspace:packages/host":
   version: 0.0.0-use.local
-  resolution: "@companion-surface/host@workspace:packages/companion-surface-host"
+  resolution: "@companion-surface/host@workspace:packages/host"
   dependencies:
     "@companion-surface/base": "workspace:~"
     fast-deep-equal: "npm:^3.1.3"

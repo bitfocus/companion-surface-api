@@ -2,7 +2,7 @@
 	"extends": "./tsconfig.base.json",
 	"files": [],
 	"references": [
-		{ "path": "./packages/companion-surface-base/tsconfig.build.json" },
-		{ "path": "./packages/companion-surface-host/tsconfig.build.json" }
+		{ "path": "./packages/base/tsconfig.build.json" },
+		{ "path": "./packages/host/tsconfig.build.json" }
 	]
 }
