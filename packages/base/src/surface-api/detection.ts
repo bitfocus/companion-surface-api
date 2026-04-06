@@ -5,8 +5,9 @@ export interface SurfacePluginDetectionEvents<TInfo> {
 	/** Emitted when surfaces are detected */
 	surfacesAdded: [surfaceInfos: DetectionSurfaceInfo<TInfo>[]]
 	/**
-	 * Emitted when discovered surfaces are lost
-	 * Note: This is important to call, to allow the id to be reused by a newly detected surface later on
+	 * Emitted when discovered surfaces are lost.
+	 * This does not trigger a disconnection of the surface, that must be done through the open surface instance.
+	 * Note: This is important to call, otherwise the unique id reserved by `surfacesAdded` will be held until the plugin is stopped
 	 */
 	surfacesRemoved: [deviceHandles: string[]]
 }
