@@ -19,10 +19,21 @@ export class DrawingState {
 		this.#queue = new ImageWriteQueue()
 	}
 
+	/**
+	 * Queue a job to be run in the current state. Jobs will be aborted if the state changes
+	 * before they are run, but if they have already started they will be allowed to finish.
+	 * @param key
+	 * @param fn
+	 */
 	queueJob(key: string, fn: (key: string, signal: AbortSignal) => Promise<void>): void {
 		this.#queue.queue(key, fn)
 	}
 
+	/**
+	 * Transition to a new state, aborting any pending jobs in the queue.
+	 * @param newState The new state to transition to
+	 * @param fnBeforeRunQueue An optional function to run after aborting the queue but before starting a new one.
+	 */
 	abortQueued(newState: string, fnBeforeRunQueue?: () => Promise<void>): void {
 		let abortQueue: ImageWriteQueue<string> | null = null
 		if (!this.#isAborting) {

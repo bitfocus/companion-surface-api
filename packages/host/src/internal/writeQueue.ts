@@ -71,7 +71,7 @@ export class ImageWriteQueue<TKey extends number | string> {
 		if (!this.#running) return
 
 		// Start another if not too many in progress
-		if (this.inProgress.size < this.maxConcurrent && this.pendingImages.length > 0) {
+		while (this.inProgress.size < this.maxConcurrent && this.pendingImages.length > 0) {
 			// Find first image where key is not being worked on
 			const nextImageIndex = this.pendingImages.findIndex((img) => !this.inProgress.has(img.key))
 			if (nextImageIndex === -1) {
