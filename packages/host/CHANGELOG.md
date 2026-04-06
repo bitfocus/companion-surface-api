@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.2.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.1.5...companion-surface-host-v1.2.0) (2026-04-06)
+
+
+### Features
+
+* allow surfacs to request ability to change the page ([f18c8bc](https://github.com/bitfocus/companion-surface-api/commit/f18c8bc156b503f0706aa35c3a51f1bdba0d36d7))
+
+
+### Bug Fixes
+
+* expose canChangePage when opening a surface ([9ea29de](https://github.com/bitfocus/companion-surface-api/commit/9ea29de1ad7e32299f565b9d09f1d4fbefb9b06f))
+* ImageWriteQueue not always using full concurrency ([56d6572](https://github.com/bitfocus/companion-surface-api/commit/56d657218df4ec13133ba6aaba9bf4f7b858db1b))
+
 ## [1.1.5](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.1.4...companion-surface-host-v1.1.5) (2026-03-21)
 
 
