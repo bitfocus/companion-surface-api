@@ -33,6 +33,6 @@
 	},
 	"devDependencies": {
 		"ajv": "^8.18.0",
-		"typedoc": "^0.28.17"
+		"typedoc": "^0.28.18"
 	}
 }

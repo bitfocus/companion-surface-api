@@ -19,17 +19,17 @@
         "node": "^22.21"
     },
     "devDependencies": {
-        "@companion-module/tools": "^3.0.0",
+        "@companion-module/tools": "^3.0.1",
         "@tsconfig/node22": "^22.0.5",
-        "@types/node": "^22.19.15",
-        "esbuild": "^0.27.4",
-        "eslint": "^9.39.4",
+        "@types/node": "^22.19.17",
+        "esbuild": "^0.28.0",
+        "eslint": "^10.2.0",
         "json-schema-to-typescript": "^15.0.4",
         "prettier": "^3.8.1",
-        "typescript": "~5.9.3",
-        "typescript-eslint": "^8.57.1",
-        "vitest": "^4.1.0",
-        "vitest-mock-extended": "^3.1.0",
+        "typescript": "~6.0.2",
+        "typescript-eslint": "^8.58.0",
+        "vitest": "^4.1.2",
+        "vitest-mock-extended": "^4.0.0",
         "zx": "^8.8.5"
     },
     "packageManager": "yarn@4.13.0"
