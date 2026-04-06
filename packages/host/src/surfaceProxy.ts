@@ -459,6 +459,11 @@ export class SurfaceProxyContext implements SurfaceContext {
 	changePage(forward: boolean): void {
 		if (this.#isLocked) return
 
+		if (!this.#surface?.registerProps.canChangePage) {
+			this.#logger.debug(`changePage called but surface has not registered changePage; ignoring`)
+			return
+		}
+
 		this.#host.surfaceEvents.changePage(this.#surfaceId, forward)
 	}
 

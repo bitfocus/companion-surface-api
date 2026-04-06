@@ -79,6 +79,14 @@ export interface SurfaceRegisterProps {
 	 * Any configuration fields for the surface
 	 */
 	configFields: SomeCompanionInputField[] | null
+
+	/**
+	 * When set, enables the `changePage` context method and provides a user-facing label describing
+	 * the gesture or action that triggers it (e.g. `'Horizontal Swipe Changes Page'`).
+	 * Omit or set to `undefined` to disable page-changing entirely for this surface.
+	 * Note: The user must enable this in the surface settings before it will be accepted
+	 */
+	canChangePage?: { label: string }
 }
 
 export interface OpenSurfaceResult {
