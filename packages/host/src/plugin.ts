@@ -11,7 +11,7 @@ import {
 import type { SurfaceHostContext } from './context.js'
 import type { PluginFeatures, CheckDeviceResult, OpenDeviceResult } from './types.js'
 import { FirmwareUpdateCheck } from './firmwareUpdateCheck.js'
-import { BANNED_PROPS } from './util.js'
+import { BANNED_PROPS, Complete } from './util.js'
 
 export class PluginWrapper<TInfo = unknown> {
 	readonly #logger = createModuleLogger('PluginWrapper')
@@ -217,7 +217,7 @@ export class PluginWrapper<TInfo = unknown> {
 		description: string,
 		pluginInfo: TInfo,
 		isRemote: boolean,
-	): Promise<OpenDeviceResult | null> {
+	): Promise<Complete<OpenDeviceResult> | null> {
 		if (this.#openSurfaces.has(resolvedSurfaceId)) {
 			throw new Error(`Surface with id ${resolvedSurfaceId} is already opened`)
 		}
@@ -261,6 +261,7 @@ export class PluginWrapper<TInfo = unknown> {
 			location: surface.registerProps.location ?? null,
 			isRemote,
 			configFields: structuredClone(surface.registerProps.configFields) ?? null,
+			canChangePage: surface.registerProps.canChangePage,
 		}
 	}
 

@@ -64,4 +64,10 @@ export interface OpenDeviceResult {
 	 * Any configuration fields for the surface
 	 */
 	configFields: SomeCompanionInputField[] | null
+
+	/**
+	 * The surface requests to be able to change the page with an offset.
+	 * This should be presented as a config option, if this is something you wish to allow
+	 */
+	canChangePage?: { label: string }
 }
