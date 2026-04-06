@@ -90,6 +90,11 @@ export interface SurfaceDrawProps {
 	controlId: string
 
 	/**
+	 * The Companion page number that the surface is currently on, if this is applicable.
+	 */
+	pageNumber?: number
+
+	/**
 	 * If the surface requested an image to be drawn, this Uint8Array will contain the pixel data in the requested dimensions and format
 	 */
 	image?: Uint8Array
