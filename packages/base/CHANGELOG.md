@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.1.3...companion-surface-base-v1.2.0) (2026-04-06)
+
+
+### Features
+
+* allow surfacs to request ability to change the page ([f18c8bc](https://github.com/bitfocus/companion-surface-api/commit/f18c8bc156b503f0706aa35c3a51f1bdba0d36d7))
+* expose pagenumber to surface draw ([359de34](https://github.com/bitfocus/companion-surface-api/commit/359de342f49dab1e1b13411acd55ab64e90c76c5))
+
 ## [1.1.3](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.1.2...companion-surface-base-v1.1.3) (2026-03-21)
 
 
