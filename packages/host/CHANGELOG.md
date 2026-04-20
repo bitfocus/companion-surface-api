@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.2.0...companion-surface-host-v1.3.0) (2026-04-20)
+
+
+### Features
+
+* expose rotation of buttons on lock pages ([27d01ac](https://github.com/bitfocus/companion-surface-api/commit/27d01ac1ee3079fc8abe03e9ff4c6f16f1f3c025))
+
 ## [1.2.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.1.5...companion-surface-host-v1.2.0) (2026-04-06)
 
 
