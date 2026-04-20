@@ -1,9 +1,18 @@
 import type { SurfaceSchemaBitmapConfig, SurfaceSchemaPixelFormat } from '@companion-surface/base'
+import type { SurfaceRotation } from './types.js'
 
 export interface LockingGraphicsGenerator {
-	generatePincodeChar(bitmapStyle: SurfaceSchemaBitmapConfig, keyCode: number | string): Promise<Uint8Array>
+	generatePincodeChar(
+		bitmapStyle: SurfaceSchemaBitmapConfig,
+		keyCode: number | string,
+		rotation: SurfaceRotation,
+	): Promise<Uint8Array>
 
-	generatePincodeValue(bitmapStyle: SurfaceSchemaBitmapConfig, charCount: number): Promise<Uint8Array>
+	generatePincodeValue(
+		bitmapStyle: SurfaceSchemaBitmapConfig,
+		charCount: number,
+		rotation: SurfaceRotation,
+	): Promise<Uint8Array>
 }
 
 export interface HostCardGenerator {

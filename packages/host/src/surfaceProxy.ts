@@ -21,6 +21,7 @@ import { SurfaceHostContext } from './context.js'
 import { getPixelFormat, getPixelFormatLength, BANNED_PROPS } from './util.js'
 import { SurfaceCardGeneratorProxy } from './internal/cardGenerator.js'
 import isEqual from 'fast-deep-equal'
+import { SurfaceRotation } from './types.js'
 
 /**
  * A wrapper around a surface to handle pincode locking and other common tasks
@@ -35,6 +36,7 @@ export class SurfaceProxy {
 	readonly #drawQueue: DrawingState
 
 	#pincodeCharacterCount = 0
+	#pincodeRotation: SurfaceRotation = 0
 
 	get surfaceId(): SurfaceId {
 		return this.#surface.surfaceId
@@ -150,12 +152,15 @@ export class SurfaceProxy {
 		}
 	}
 
-	showLockedStatus(locked: boolean, characterCount: number): void {
+	showLockedStatus(locked: boolean, characterCount: number, rotation: SurfaceRotation): void {
 		const wasLocked = this.#context.isLocked
+		const redraw = !wasLocked || rotation !== this.#pincodeRotation
+
 		this.#context.setLocked(locked)
 		this.#pincodeCharacterCount = characterCount
+		this.#pincodeRotation = rotation
 
-		if (!wasLocked) {
+		if (redraw) {
 			// Always discard the previous draw
 			this.#drawQueue.abortQueued('locked-pending-draw', async () => this.#surface.blank())
 		}
@@ -165,7 +170,7 @@ export class SurfaceProxy {
 			return
 		}
 
-		if (!wasLocked) {
+		if (redraw) {
 			this.drawPincodePage()
 		} else {
 			this.#drawPincodeStatus()
@@ -213,7 +218,7 @@ export class SurfaceProxy {
 		if (this.#context.pincodeMap?.type === 'multiple-page') {
 			this.#drawPincodeButton(
 				this.#context.pincodeMap.nextPage,
-				async (bitmapStyle) => this.#host.lockingGraphics.generatePincodeChar(bitmapStyle, '+'),
+				async (bitmapStyle) => this.#host.lockingGraphics.generatePincodeChar(bitmapStyle, '+', this.#pincodeRotation),
 				'#ffffff',
 				'+',
 			)
@@ -227,7 +232,12 @@ export class SurfaceProxy {
 
 		this.#drawPincodeButton(
 			pincodeXy,
-			async (bitmapStyle) => this.#host.lockingGraphics.generatePincodeValue(bitmapStyle, this.#pincodeCharacterCount),
+			async (bitmapStyle) =>
+				this.#host.lockingGraphics.generatePincodeValue(
+					bitmapStyle,
+					this.#pincodeCharacterCount,
+					this.#pincodeRotation,
+				),
 			'#ffffff',
 			'*'.repeat(this.#pincodeCharacterCount),
 		)
@@ -244,7 +254,7 @@ export class SurfaceProxy {
 
 		this.#drawPincodeButton(
 			controlId,
-			async (bitmapStyle) => this.#host.lockingGraphics.generatePincodeChar(bitmapStyle, key),
+			async (bitmapStyle) => this.#host.lockingGraphics.generatePincodeChar(bitmapStyle, key, this.#pincodeRotation),
 			'#ffffff',
 			`${key}`,
 		)

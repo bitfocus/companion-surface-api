@@ -71,3 +71,5 @@ export interface OpenDeviceResult {
 	 */
 	canChangePage?: { label: string }
 }
+
+export type SurfaceRotation = 0 | 90 | -90 | 180

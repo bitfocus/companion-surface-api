@@ -3,6 +3,7 @@ export * from './graphics.js'
 export * from './logging.js'
 export * from './types.js'
 export * from './context.js'
+export { SurfaceRotation } from './types.js'
 
 // Re-export types from base package that are useful for host implementations
 export {

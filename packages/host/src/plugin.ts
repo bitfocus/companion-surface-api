@@ -9,7 +9,7 @@ import {
 	DetectionSurfaceInfo,
 } from '@companion-surface/base'
 import type { SurfaceHostContext } from './context.js'
-import type { PluginFeatures, CheckDeviceResult, OpenDeviceResult } from './types.js'
+import type { PluginFeatures, CheckDeviceResult, OpenDeviceResult, SurfaceRotation } from './types.js'
 import { FirmwareUpdateCheck } from './firmwareUpdateCheck.js'
 import { BANNED_PROPS, Complete } from './util.js'
 
@@ -394,11 +394,16 @@ export class PluginWrapper<TInfo = unknown> {
 		surface.onVariableValue(name, value)
 	}
 
-	async showLockedStatus(surfaceId: string, locked: boolean, characterCount: number): Promise<void> {
+	async showLockedStatus(
+		surfaceId: string,
+		locked: boolean,
+		characterCount: number,
+		rotation: SurfaceRotation = 0,
+	): Promise<void> {
 		const surface = this.#openSurfaces.get(surfaceId)
 		if (!surface) throw new Error(`Surface with id ${surfaceId} is not opened`)
 
-		surface.showLockedStatus(locked, characterCount)
+		surface.showLockedStatus(locked, characterCount, rotation)
 	}
 
 	async showStatus(surfaceId: string, hostname: string, status: string): Promise<void> {
