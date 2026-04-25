@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.2.0...companion-surface-base-v1.2.1) (2026-04-25)
+
+
+### Bug Fixes
+
+* expose supportsNonSquareButtons capability ([3e5a059](https://github.com/bitfocus/companion-surface-api/commit/3e5a059fac1c85eba69b4b7250f21e7b709635e9))
+
 ## [1.2.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.1.3...companion-surface-base-v1.2.0) (2026-04-06)
 
 
