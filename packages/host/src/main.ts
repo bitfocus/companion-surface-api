@@ -20,4 +20,5 @@ export {
 	SurfaceFirmwareUpdateInfo,
 	HIDDevice,
 	SurfaceDrawProps,
+	HostCapabilities,
 } from '@companion-surface/base'

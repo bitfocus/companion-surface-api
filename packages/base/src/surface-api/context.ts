@@ -1,7 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface HostCapabilities {
-	// For future use to support new functionality
-	// TODO - explain what this means, and how it interacts in satellite mode
+	/**
+	 * Indicates whether the host supports non-square buttons.
+	 */
+	supportsNonSquareButtons: boolean | undefined
 }
 
 /**
