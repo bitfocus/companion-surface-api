@@ -21,4 +21,9 @@ export {
 	HIDDevice,
 	SurfaceDrawProps,
 	HostCapabilities,
+	GridSize,
+	SurfaceInputVariable,
+	SurfaceOutputVariable,
+	SomeCompanionInputField,
+	OptionsObject,
 } from '@companion-surface/base'
