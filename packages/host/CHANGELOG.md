@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.3.1...companion-surface-host-v1.3.2) (2026-04-26)
+
+
+### Bug Fixes
+
+* missing reexports ([703cc29](https://github.com/bitfocus/companion-surface-api/commit/703cc29f5e43a011e701d1463ac12e6e95bc9d5e))
+
 ## [1.3.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.3.0...companion-surface-host-v1.3.1) (2026-04-25)
 
 
