@@ -22,7 +22,7 @@
         "@companion-module/tools": "^3.0.1",
         "@tsconfig/node22": "^22.0.5",
         "@types/node": "^22.19.17",
-        "esbuild": "^0.28.0",
+        "esbuild": "^0.28.1",
         "eslint": "^10.2.1",
         "json-schema-to-typescript": "^15.0.4",
         "prettier": "^3.8.3",
