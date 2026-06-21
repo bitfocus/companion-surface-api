@@ -14,6 +14,11 @@ on:
         options:
           - base
           - host
+      publish-docs:
+        description: 'Publish docs (only applies to base package)'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -61,6 +66,7 @@ jobs:
       package-path: ${{ steps.determine.outputs.package-path }}
       tag: ${{ steps.determine.outputs.tag }}
       prerelease: ${{ steps.determine.outputs.prerelease }}
+      publish-docs: ${{ steps.determine.outputs.publish-docs }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -73,9 +79,11 @@ jobs:
             # Manual dispatch - use input
             if [ "${{ github.event.inputs.package }}" = "base" ]; then
               PACKAGE_NAME="@companion-surface/base"
+              PACKAGE_SHORT_NAME="base"
               PACKAGE_PATH="packages/base"
             else
               PACKAGE_NAME="@companion-surface/host"
+              PACKAGE_SHORT_NAME="host"
               PACKAGE_PATH="packages/host"
             fi
             
@@ -96,6 +104,7 @@ jobs:
             
             echo "tag=${TAG}" >> $GITHUB_OUTPUT
             echo "prerelease=${PRERELEASE}" >> $GITHUB_OUTPUT
+            echo "publish-docs=${{ github.event.inputs.publish-docs }}" >> $GITHUB_OUTPUT
           else
             # Tag push - parse tag name
             TAG="${{ github.ref_name }}"
@@ -112,6 +121,7 @@ jobs:
               exit 1
             fi
             echo "tag=latest" >> $GITHUB_OUTPUT
+            echo "publish-docs=true" >> $GITHUB_OUTPUT
           fi
 
           echo "package-name=${PACKAGE_NAME}" >> $GITHUB_OUTPUT
@@ -203,3 +213,59 @@ jobs:
           echo "**Published:** ${{ needs.determine-package.outputs.package-name }}@${NEW_VERSION}" >> $GITHUB_STEP_SUMMARY
         env:
           CI: true
+
+  prepare-docs:
+    name: Prepare docs for publishing
+    needs: determine-package
+    runs-on: ubuntu-latest
+
+    if: ${{ needs.determine-package.outputs.publish-docs == 'true' && needs.determine-package.outputs.package-short-name == 'base' }}
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+      - name: Enable corepack
+        run: corepack enable
+      - name: Prepare build
+        run: |
+          yarn install
+          yarn build
+
+      - name: Generate docs
+        run: |
+          cd packages/base
+          yarn docs:html
+
+      - name: Upload docs artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: packages/base/docs/
+
+  publish-docs:
+    name: Publish docs
+    needs:
+      - prepare-docs
+      - publish
+      - determine-package
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
+
+    if: ${{ needs.determine-package.outputs.publish-docs == 'true' && needs.determine-package.outputs.package-short-name == 'base' }}
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
