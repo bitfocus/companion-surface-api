@@ -3,6 +3,7 @@ import type { SurfaceProxy } from './surfaceProxy.js'
 import type { SurfaceFirmwareUpdateCache, SurfaceFirmwareUpdateInfo } from '@companion-surface/base'
 
 const FIRMWARE_UPDATE_POLL_INTERVAL = 1000 * 60 * 60 * 24 // 24 hours
+const FETCH_TIMEOUT = 1000 * 30 // 30 seconds
 
 export class FirmwareUpdateCheck {
 	readonly #logger = createModuleLogger('FirmwareUpdateCheck')
@@ -131,8 +132,8 @@ class SurfaceFirmwareUpdateCacheImpl implements SurfaceFirmwareUpdateCache {
 		const { promise: pendingPromise, resolve } = Promise.withResolvers<unknown | null>()
 		this.#payloadUpdating.set(cacheKey, pendingPromise)
 
-		// Fetch new data
-		void fetch(url)
+		// Fetch new data, aborting if the request takes too long
+		void fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT) })
 			.then(async (res) => res.json())
 			.catch((e) => {
 				this.#logger.warn(`Failed to fetch firmware update payload from "${url}": ${e}`)
