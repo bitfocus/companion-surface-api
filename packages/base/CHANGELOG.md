@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.2.1...companion-surface-base-v1.3.0) (2026-07-12)
+
+
+### Features
+
+* allow modules to use node26 ([6f9a18c](https://github.com/bitfocus/companion-surface-api/commit/6f9a18cd8479bf77f9022bc0f209baa43317c8b9))
+
 ## [1.2.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.2.0...companion-surface-base-v1.2.1) (2026-04-25)
 
 
