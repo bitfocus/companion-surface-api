@@ -28,9 +28,6 @@
 		"assets",
 		"lib"
 	],
-	"dependencies": {
-		"tslib": "^2.8.1"
-	},
 	"devDependencies": {
 		"ajv": "^8.20.0",
 		"typedoc": "^0.28.20"
