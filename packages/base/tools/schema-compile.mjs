@@ -1,4 +1,3 @@
-// eslint-disable-next-line n/no-extraneous-import
 import { $ } from 'zx'
 import fs from 'fs'
 import Ajv2020 from 'ajv/dist/2020.js'
