@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.3.2...companion-surface-host-v1.3.3) (2026-07-12)
+
+
+### Bug Fixes
+
+* add timeout to firmware fetch ([5ceb2ce](https://github.com/bitfocus/companion-surface-api/commit/5ceb2ce3b9ec5b54583eeca7b901fdf70926d5ee))
+
 ## [1.3.2](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.3.1...companion-surface-host-v1.3.2) (2026-04-26)
 
 
