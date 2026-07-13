@@ -134,7 +134,22 @@ export class SurfaceProxy {
 			const controlInfo = this.#registerProps.surfaceLayout.controls[controlId]
 			if (!controlInfo) throw new Error(`Received draw for unknown controlId: ${controlId}`)
 
-			await this.#surface.draw(signal, data)
+			let drawData = data
+
+			// Validate the leds buffer length against the control's declared segment count.
+			// If it doesn't match, warn and drop the value rather than passing a malformed buffer to the surface.
+			if (drawData.leds) {
+				const ledsConfig = this.#getStyleForPreset(controlInfo.stylePreset).leds
+				const expectedLength = ledsConfig ? ledsConfig.segments * 3 : 0
+				if (drawData.leds.length !== expectedLength) {
+					this.#logger.warn(
+						`Dropping leds for control "${controlId}": expected ${expectedLength} bytes but got ${drawData.leds.length}`,
+					)
+					drawData = { ...drawData, leds: undefined }
+				}
+			}
+
+			await this.#surface.draw(signal, drawData)
 		})
 	}
 

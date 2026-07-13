@@ -118,6 +118,15 @@ export interface SurfaceDrawProps {
 	 * This is typically only used for surfaces which have buttons with text-only displays
 	 */
 	text?: string
+
+	/**
+	 * If the control's style preset requested `leds`, this is the colour for each LED segment,
+	 * packed as raw RGB (3 bytes per segment), in logical order (index 0 first).
+	 * The length is always `leds.segments * 3`.
+	 * This is always raw RGB, regardless of any bitmap pixel format.
+	 * Use `readLedColor` to read the colour of a given segment.
+	 */
+	leds?: Uint8Array
 }
 
 export interface GridSize {
