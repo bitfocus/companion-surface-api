@@ -41,7 +41,7 @@
 					"minimum": 1
 				},
 				"mode": {
-					"description": "How Companion maps a gauge onto these LEDs. `full-ring`: the LEDs form a complete circle and the gauge is rendered faithfully (angles, deadzone and colours respected 1:1); segment 0 is at 6 o'clock and indices increase clockwise. `simple`: any other shape (partial-arc rings, bars, columns); the gauge's angles are ignored and the value is swept across all segments, with segment 0 as the 0% end. In both cases the surface re-maps to its physical wiring locally if it differs from these conventions.",
+					"description": "How Companion maps a gauge onto these LEDs. `full-ring`: the LEDs form a complete circle and the gauge is rendered faithfully (angles, deadzone and colours respected 1:1); segment 0 is at 6 o'clock and indices increase clockwise. `simple`: any other shape  where the value is swept across all segments, with segment 0 as the 0% end. In both cases the surface re-maps to its physical wiring locally if it differs from these conventions.",
 					"type": "string",
 					"enum": ["full-ring", "simple"]
 				}
