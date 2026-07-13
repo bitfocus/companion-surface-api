@@ -11,12 +11,12 @@
 			"properties": {
 				"w": {
 					"description": "Width in pixels (non-negative).",
-					"type": "number",
+					"type": "integer",
 					"minimum": 0
 				},
 				"h": {
 					"description": "Height in pixels (non-negative).",
-					"type": "number",
+					"type": "integer",
 					"minimum": 0
 				},
 				"format": {
@@ -37,7 +37,7 @@
 			"properties": {
 				"segments": {
 					"description": "The number of individually addressable LED segments.",
-					"type": "number",
+					"type": "integer",
 					"minimum": 1
 				},
 				"mode": {
@@ -106,12 +106,12 @@
 					"properties": {
 						"row": {
 							"description": "Zero-based row index for layout placement.",
-							"type": "number",
+							"type": "integer",
 							"minimum": 0
 						},
 						"column": {
 							"description": "Zero-based column index for layout placement.",
-							"type": "number",
+							"type": "integer",
 							"minimum": 0
 						},
 						"stylePreset": {
