@@ -133,6 +133,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: determine-package
     timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: read # to read the pending version from the open release-please PR
     steps:
       - uses: actions/checkout@v7
         with:
@@ -150,15 +153,39 @@ jobs:
 
           # Bump to prerelease version if needed
           if [ "${{ needs.determine-package.outputs.prerelease }}" != "" ]; then
-            cd ${{ needs.determine-package.outputs.package-path }}
-            OLD_VERSION=$(node -p "require('./package.json').version")
-            yarn version ${OLD_VERSION}-${{ needs.determine-package.outputs.prerelease }}
+            PKG_PATH="${{ needs.determine-package.outputs.package-path }}"
+            BASE_VERSION=$(node -p "require('./$PKG_PATH/package.json').version")
+
+            # On main, base the prerelease on the version release-please will publish next,
+            # read from its open release PR's manifest (this is what it computed from the
+            # conventional commits). Falls back to the published version when there is no
+            # open release PR (nothing releasable yet) or on any other branch.
+            if [ "${{ github.ref_name }}" = "main" ]; then
+              RP_BRANCH=$(gh pr list --state open --label "autorelease: pending" \
+                --json headRefName -q '.[0].headRefName' 2>/dev/null || true)
+              if [ -n "$RP_BRANCH" ]; then
+                PENDING=$(gh api "repos/$GITHUB_REPOSITORY/contents/.release-please-manifest.json?ref=$RP_BRANCH" \
+                  --jq '.content' 2>/dev/null | base64 -d | jq -r --arg p "$PKG_PATH" '.[$p] // empty' || true)
+                if [ -n "$PENDING" ]; then
+                  echo "Using pending release-please version for $PKG_PATH: $PENDING (published is $BASE_VERSION)"
+                  BASE_VERSION="$PENDING"
+                else
+                  echo "No pending version for $PKG_PATH in release PR; using published $BASE_VERSION"
+                fi
+              else
+                echo "No open release-please PR; using published version $BASE_VERSION"
+              fi
+            fi
+
+            cd "$PKG_PATH"
+            yarn version "${BASE_VERSION}-${{ needs.determine-package.outputs.prerelease }}"
             cd ../..
           fi
 
           yarn build
         env:
           CI: true
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload release artifact
         uses: actions/upload-artifact@v7
         with:
