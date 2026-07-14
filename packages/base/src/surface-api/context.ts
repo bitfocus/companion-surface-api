@@ -3,6 +3,13 @@ export interface HostCapabilities {
 	 * Indicates whether the host supports non-square buttons.
 	 */
 	supportsNonSquareButtons: boolean | undefined
+
+	/**
+	 * Indicates whether the host supports addressable LED strips/rings (the `leds` control capability).
+	 * When this is not true, a surface should omit `leds` from its style presets and fall back to
+	 * whatever it would otherwise draw (e.g. a plain backlight colour).
+	 */
+	supportsLeds: boolean | undefined
 }
 
 /**
