@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.3.0...companion-surface-base-v1.4.0) (2026-07-21)
+
+
+### Features
+
+* support surface gauge leds ([#75](https://github.com/bitfocus/companion-surface-api/issues/75)) ([a42afb9](https://github.com/bitfocus/companion-surface-api/commit/a42afb9a66785db0d29eccae3b5866712653afbb))
+
+
+### Bug Fixes
+
+* add supportsLeds to HostCapabilities ([17ba70a](https://github.com/bitfocus/companion-surface-api/commit/17ba70a55a0bb637f0a50af4cadce36182f7ba8d))
+
 ## [1.3.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.2.1...companion-surface-base-v1.3.0) (2026-07-12)
 
 
