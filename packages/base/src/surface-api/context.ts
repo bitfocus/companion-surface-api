@@ -50,13 +50,25 @@ export interface SurfaceContext {
 	/**
 	 * Trigger a left rotation event on a control by its id
 	 * @param controlId Id of the control
+	 * @param amount Number of steps rotated for this event. The magnitude is used (`Math.abs`);
+	 * the direction is always leftward. Defaults to `1`.
 	 */
-	rotateLeftById(controlId: string): void
+	rotateLeftById(controlId: string, amount?: number): void
 	/**
 	 * Trigger a right rotation event on a control by its id
 	 * @param controlId Id of the control
+	 * @param amount Number of steps rotated for this event. The magnitude is used (`Math.abs`);
+	 * the direction is always rightward. Defaults to `1`.
 	 */
-	rotateRightById(controlId: string): void
+	rotateRightById(controlId: string, amount?: number): void
+	/**
+	 * Trigger a rotation event on a control by its id, with a signed step count.
+	 * @param controlId Id of the control
+	 * @param delta Signed number of steps rotated for this event: the sign is the direction
+	 * (negative = leftward, positive = rightward) and the magnitude is the number of steps.
+	 * Must be a non-zero finite number; a `delta` of `0` is ignored.
+	 */
+	rotateById(controlId: string, delta: number): void
 
 	/**
 	 * Change the current page of the surface

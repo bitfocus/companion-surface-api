@@ -458,27 +458,31 @@ export class SurfaceProxyContext implements SurfaceContext {
 			}
 		}, 20)
 	}
-	rotateLeftById(controlId: ControlId): void {
-		if (this.#isLocked) return
-
-		const control = this.#getControlById(controlId)
-		if (!control) {
-			this.#logger.warn(`Control ${controlId} not found in rotateLeftById`)
-			return
-		}
-
-		this.#host.surfaceEvents.inputRotate(this.#surfaceId, controlId, -1)
+	rotateLeftById(controlId: ControlId, amount = 1): void {
+		this.#rotateById(controlId, -Math.abs(amount), 'rotateLeftById')
 	}
-	rotateRightById(controlId: ControlId): void {
+	rotateRightById(controlId: ControlId, amount = 1): void {
+		this.#rotateById(controlId, Math.abs(amount), 'rotateRightById')
+	}
+	rotateById(controlId: ControlId, delta: number): void {
+		this.#rotateById(controlId, delta, 'rotateById')
+	}
+
+	#rotateById(controlId: ControlId, delta: number, caller: string): void {
 		if (this.#isLocked) return
 
-		const control = this.#getControlById(controlId)
-		if (!control) {
-			this.#logger.warn(`Control ${controlId} not found in rotateRightById`)
+		if (!Number.isFinite(delta) || delta === 0) {
+			this.#logger.warn(`Ignoring ${caller} for ${controlId} with invalid delta ${delta}`)
 			return
 		}
 
-		this.#host.surfaceEvents.inputRotate(this.#surfaceId, controlId, 1)
+		const control = this.#getControlById(controlId)
+		if (!control) {
+			this.#logger.warn(`Control ${controlId} not found in ${caller}`)
+			return
+		}
+
+		this.#host.surfaceEvents.inputRotate(this.#surfaceId, controlId, delta)
 	}
 
 	changePage(forward: boolean): void {
