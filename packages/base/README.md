@@ -34,7 +34,9 @@ Check the [template repository](https://github.com/bitfocus/companion-surface-te
 
 | Companion | Module-base |
 | --------- | ----------- |
-| v4.x      | v1.0        |
+| v4.3      | v1.2        |
+| v5.0      | v1.3        |
+| v5.1      | v1.4 (TBD)  |
 
 ## Documentation
 
