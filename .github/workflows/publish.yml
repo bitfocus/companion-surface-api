@@ -14,6 +14,15 @@ on:
         options:
           - base
           - host
+      bump:
+        description: 'Version bump for the prerelease base (relative to current release)'
+        required: false
+        type: choice
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
       publish-docs:
         description: 'Publish docs (only applies to base package)'
         required: false
@@ -66,6 +75,7 @@ jobs:
       package-path: ${{ steps.determine.outputs.package-path }}
       tag: ${{ steps.determine.outputs.tag }}
       prerelease: ${{ steps.determine.outputs.prerelease }}
+      bump: ${{ steps.determine.outputs.bump }}
       publish-docs: ${{ steps.determine.outputs.publish-docs }}
     steps:
       - uses: actions/checkout@v7
@@ -104,6 +114,7 @@ jobs:
             
             echo "tag=${TAG}" >> $GITHUB_OUTPUT
             echo "prerelease=${PRERELEASE}" >> $GITHUB_OUTPUT
+            echo "bump=${{ github.event.inputs.bump }}" >> $GITHUB_OUTPUT
             echo "publish-docs=${{ github.event.inputs.publish-docs }}" >> $GITHUB_OUTPUT
           else
             # Tag push - parse tag name
@@ -155,6 +166,7 @@ jobs:
           if [ "${{ needs.determine-package.outputs.prerelease }}" != "" ]; then
             PKG_PATH="${{ needs.determine-package.outputs.package-path }}"
             BASE_VERSION=$(node -p "require('./$PKG_PATH/package.json').version")
+            USE_PENDING=""
 
             # On main, base the prerelease on the version release-please will publish next,
             # read from its open release PR's manifest (this is what it computed from the
@@ -169,12 +181,29 @@ jobs:
                 if [ -n "$PENDING" ]; then
                   echo "Using pending release-please version for $PKG_PATH: $PENDING (published is $BASE_VERSION)"
                   BASE_VERSION="$PENDING"
+                  USE_PENDING="1"
                 else
                   echo "No pending version for $PKG_PATH in release PR; using published $BASE_VERSION"
                 fi
               else
                 echo "No open release-please PR; using published version $BASE_VERSION"
               fi
+            fi
+
+            # When we don't have a pending release-please version (which is already the
+            # *next* release), base the prerelease on the *next* release version so it
+            # sorts *above* the current release. A prerelease of the current version
+            # (e.g. 2.1.3-nightly-...) semver-ranks below 2.1.3 and yarn refuses it. The
+            # bump type (patch/minor/major) is chosen at dispatch time.
+            if [ -z "$USE_PENDING" ]; then
+              BASE_VERSION=$(BUMP="${{ needs.determine-package.outputs.bump }}" node -p "
+                const [maj, min, pat] = '$BASE_VERSION'.split('-')[0].split('.').map(Number);
+                ({
+                  major: \`\${maj + 1}.0.0\`,
+                  minor: \`\${maj}.\${min + 1}.0\`,
+                  patch: \`\${maj}.\${min}.\${pat + 1}\`,
+                })[process.env.BUMP || 'patch']")
+              echo "Bumped published version to next $BASE_VERSION for prerelease base"
             fi
 
             cd "$PKG_PATH"
