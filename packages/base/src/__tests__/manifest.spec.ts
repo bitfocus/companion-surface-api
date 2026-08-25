@@ -29,19 +29,19 @@ function validManifest(overrides: Partial<SurfaceModuleManifest> = {}): SurfaceM
 describe('validateSurfaceManifest', () => {
 	describe('basic type validation', () => {
 		it('throws when passed null', () => {
-			expect(() => validateSurfaceManifest(null as any, true)).toThrow('Manifest is not an object')
+			expect(() => validateSurfaceManifest(null as any, true)).toThrow('Manifest validation failed')
 		})
 
 		it('throws when passed undefined', () => {
-			expect(() => validateSurfaceManifest(undefined as any, true)).toThrow('Manifest is not an object')
+			expect(() => validateSurfaceManifest(undefined as any, true)).toThrow('Manifest validation failed')
 		})
 
 		it('throws when passed a string', () => {
-			expect(() => validateSurfaceManifest('hello' as any, true)).toThrow('Manifest is not an object')
+			expect(() => validateSurfaceManifest('hello' as any, true)).toThrow('Manifest validation failed')
 		})
 
 		it('throws when passed a number', () => {
-			expect(() => validateSurfaceManifest(42 as any, true)).toThrow('Manifest is not an object')
+			expect(() => validateSurfaceManifest(42 as any, true)).toThrow('Manifest validation failed')
 		})
 	})
 
@@ -52,7 +52,7 @@ describe('validateSurfaceManifest', () => {
 
 		it('throws when type is not surface', () => {
 			expect(() => validateSurfaceManifest(validManifest({ type: 'module' as any }), true)).toThrow(
-				"Manifest 'type' must be 'surface'",
+				'Manifest validation failed',
 			)
 		})
 
@@ -93,38 +93,38 @@ describe('validateSurfaceManifest', () => {
 	describe('template placeholder checks (looseChecks=false)', () => {
 		it('throws when id contains the template name', () => {
 			expect(() => validateSurfaceManifest(validManifest({ id: 'companion-surface-your-module-name' }), false)).toThrow(
-				`Manifest incorrectly references template module 'your-module-name'`,
+				'Manifest validation failed',
 			)
 		})
 
 		it('throws when shortname contains the template shortname', () => {
 			expect(() => validateSurfaceManifest(validManifest({ shortname: 'module-shortname' }), false)).toThrow(
-				`Manifest incorrectly references template module 'module-shortname'`,
+				'Manifest validation failed',
 			)
 		})
 
 		it('throws when description contains the template description', () => {
 			const desc = 'A short one line description of your module'
 			expect(() => validateSurfaceManifest(validManifest({ description: desc }), false)).toThrow(
-				`Manifest incorrectly references template module '${desc}'`,
+				'Manifest validation failed',
 			)
 		})
 
 		it('throws when a maintainer name contains the template name', () => {
 			expect(() => validateSurfaceManifest(validManifest({ maintainers: [{ name: 'Your name' }] }), false)).toThrow(
-				`Manifest incorrectly references template module 'Your name'`,
+				'Manifest validation failed',
 			)
 		})
 
 		it('throws when a maintainer email contains the template email', () => {
 			expect(() =>
 				validateSurfaceManifest(validManifest({ maintainers: [{ name: 'Test Author', email: 'Your email' }] }), false),
-			).toThrow(`Manifest incorrectly references template module 'Your email'`)
+			).toThrow('Manifest validation failed')
 		})
 
 		it('throws when products contains the template product', () => {
 			expect(() => validateSurfaceManifest(validManifest({ products: ['Your product'] }), false)).toThrow(
-				`Manifest incorrectly references template module 'Your product'`,
+				'Manifest validation failed',
 			)
 		})
 

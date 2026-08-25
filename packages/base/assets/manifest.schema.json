@@ -1,139 +1,54 @@
 {
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
-	"type": "object",
+	"$id": "/assets/manifest.schema.json",
 	"title": "SurfaceModuleManifest",
+	"type": "object",
 	"properties": {
-		"$schema": {
-			"type": "string"
-		},
-		"type": {
-			"type": "string",
-			"enum": ["surface"],
-			"description": "Type of module. Must be: surface"
-		},
+		"$schema": { "type": "string" },
+		"type": { "type": "string", "enum": ["surface"], "description": "Type of module. Must be: surface" },
 		"id": {
 			"type": "string",
+			"pattern": "^((?!your-module-name)[\\s\\S])*$",
 			"description": "Unique identifier for the module"
 		},
-		"name": {
-			"type": "string",
-			"description": "Name of the module"
-		},
-		"shortname": {
-			"type": "string"
-		},
+		"name": { "type": "string", "pattern": "^((?!your-module-name)[\\s\\S])*$", "description": "Name of the module" },
+		"shortname": { "type": "string", "pattern": "^((?!module-shortname)[\\s\\S])*$" },
 		"description": {
 			"type": "string",
-			"description": "Description of the module "
+			"pattern": "^((?!A short one line description of your module)[\\s\\S])*$",
+			"description": "Description of the module"
 		},
-		"version": {
-			"type": "string",
-			"description": "Current version of the module"
-		},
+		"version": { "type": "string", "description": "Current version of the module" },
 		"isPrerelease": {
-			"type": "boolean",
-			"description": "Is this a pre-release version"
+			"description": "Is this a pre-release version. Note: this gets set by the build system",
+			"type": "boolean"
 		},
-		"license": {
-			"type": "string",
-			"description": "SPDX identifier for license of the module"
-		},
-		"repository": {
-			"type": "string",
-			"description": "URL to the source repository"
-		},
-		"bugs": {
-			"type": "string",
-			"description": "URL to bug tracker"
-		},
+		"license": { "type": "string", "description": "SPDX identifier for license of the module" },
+		"repository": { "type": "string", "description": "URL to the source repository" },
+		"bugs": { "type": "string", "description": "URL to bug tracker" },
 		"maintainers": {
 			"type": "array",
-			"description": "List of active maintiners",
+			"items": { "$ref": "#/$defs/SurfaceModuleManifestMaintainer" },
 			"uniqueItems": true,
-			"items": {
-				"type": "object",
-				"title": "SurfaceModuleManifestMaintainer",
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"email": {
-						"type": "string"
-					},
-					"github": {
-						"type": "string"
-					},
-					"url": {
-						"type": "string"
-					}
-				},
-				"required": ["name"],
-				"additionalProperties": false
-			}
+			"description": "List of active maintainers"
 		},
-		"runtime": {
-			"type": "object",
-			"title": "SurfaceModuleManifestRuntime",
-			"description": "Information on how to execute the module",
-			"properties": {
-				"type": {
-					"type": "string",
-					"description": "Type of the module. Must be: node22 or node26",
-					"enum": ["node22", "node26"]
-				},
-				"apiVersion": {
-					"type": "string",
-					"description": "The version of the host-api used"
-				},
-				"entrypoint": {
-					"type": "string",
-					"description": "Entrypoint to pass to the runtime. eg index.js"
-				}
-			},
-			"required": ["type", "apiVersion", "entrypoint"]
-		},
+		"runtime": { "$ref": "#/$defs/SurfaceModuleManifestRuntime" },
 		"products": {
+			"minItems": 1,
 			"type": "array",
-			"uniqueItems": true,
-			"items": {
-				"type": "string"
-			},
-			"minItems": 1
+			"items": { "type": "string", "pattern": "^((?!Your product)[\\s\\S])*$" },
+			"uniqueItems": true
 		},
-		"keywords": {
-			"type": "array",
-			"uniqueItems": true,
-			"items": {
-				"type": "string"
-			}
-		},
+		"keywords": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
 		"usbIds": {
 			"type": "array",
-			"description": "List of USB vendor and product IDs that the module supports. Your module will only be notified of devices matching these IDs.",
+			"items": { "$ref": "#/$defs/SurfaceModuleManifestUsbIds" },
 			"uniqueItems": true,
-			"items": {
-				"type": "object",
-				"title": "SurfaceModuleManifestUsbIds",
-				"properties": {
-					"vendorId": {
-						"type": "integer"
-					},
-					"productIds": {
-						"type": "array",
-						"uniqueItems": true,
-						"items": {
-							"type": "integer"
-						},
-						"minItems": 1
-					}
-				},
-				"required": ["vendorId", "productIds"],
-				"additionalProperties": false
-			}
+			"description": "List of USB vendor and product IDs that the module supports. Your module will only be notified of devices matching these IDs."
 		},
 		"allowMultipleInstances": {
-			"type": "boolean",
-			"description": "Whether multiple instances of this module can be run simultaneously"
+			"description": "Whether multiple instances of this module can be run simultaneously",
+			"type": "boolean"
 		}
 	},
 	"required": [
@@ -151,5 +66,47 @@
 		"products",
 		"keywords",
 		"usbIds"
-	]
+	],
+	"$defs": {
+		"SurfaceModuleManifestMaintainer": {
+			"type": "object",
+			"properties": {
+				"name": { "type": "string", "pattern": "^((?!Your name)[\\s\\S])*$" },
+				"email": { "type": "string", "pattern": "^((?!Your email)[\\s\\S])*$" },
+				"github": { "type": "string" },
+				"url": { "type": "string" }
+			},
+			"required": ["name"],
+			"title": "SurfaceModuleManifestMaintainer"
+		},
+		"SurfaceModuleManifestRuntime": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": ["node22", "node26"],
+					"description": "Type of the module. Must be: node22 or node26"
+				},
+				"apiVersion": { "type": "string", "description": "The version of the host-api used" },
+				"entrypoint": { "type": "string", "description": "Entrypoint to pass to the runtime. eg index.js" }
+			},
+			"required": ["type", "apiVersion", "entrypoint"],
+			"description": "Information on how to execute the module",
+			"title": "SurfaceModuleManifestRuntime"
+		},
+		"SurfaceModuleManifestUsbIds": {
+			"type": "object",
+			"properties": {
+				"vendorId": { "type": "integer", "minimum": -9007199254740991, "maximum": 9007199254740991 },
+				"productIds": {
+					"minItems": 1,
+					"type": "array",
+					"items": { "type": "integer", "minimum": -9007199254740991, "maximum": 9007199254740991 },
+					"uniqueItems": true
+				}
+			},
+			"required": ["vendorId", "productIds"],
+			"title": "SurfaceModuleManifestUsbIds"
+		}
+	}
 }

@@ -1,4 +1,4 @@
-import type { SurfaceSchemaPixelFormat } from '../../generated/surface-layout.d.ts'
+import type { SurfaceSchemaPixelFormat } from '../surface-layout-schema.js'
 
 export interface CardGenerator {
 	/**

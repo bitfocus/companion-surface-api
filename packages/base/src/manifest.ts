@@ -1,46 +1,48 @@
-import type { SurfaceModuleManifest } from '../generated/manifest.d.ts'
-// @ts-expect-error no typings
-// eslint-disable-next-line n/no-missing-import
-import validateSurfaceManifestSchema from '../generated/validate_manifest.js'
+import z from 'zod'
+import {
+	buildManifestSchema,
+	type SurfaceModuleManifest,
+	type SurfaceModuleManifestMaintainer,
+	type SurfaceModuleManifestRuntime,
+	type SurfaceModuleManifestUsbIds,
+} from './manifest-schema.js'
 
-export type * from '../generated/manifest.d.ts'
+export type {
+	SurfaceModuleManifest,
+	SurfaceModuleManifestMaintainer,
+	SurfaceModuleManifestRuntime,
+	SurfaceModuleManifestUsbIds,
+}
 
-/** Validate that a manifest looks correctly populated */
-export function validateSurfaceManifest(manifest: SurfaceModuleManifest, looseChecks: boolean): void {
-	if (!manifest || typeof manifest !== 'object') {
-		throw new Error(`Manifest is not an object`)
-	}
+// Build both schemas once, up front, so validation is cheap on repeat calls.
+const strictManifestSchema = buildManifestSchema(true)
+const looseManifestSchema = buildManifestSchema(false)
 
-	if (manifest.type !== 'surface') throw new Error(`Manifest 'type' must be 'surface'`)
+/** Format zod issues into a single, human readable string. */
+function formatValidationError(error: z.ZodError): string {
+	return error.issues
+		.map((issue) => {
+			const path = issue.path.length > 0 ? `/${issue.path.join('/')}` : ''
+			return path ? `${path} ${issue.message}` : issue.message
+		})
+		.join('; ')
+}
 
-	if (!validateSurfaceManifestSchema(manifest)) {
-		const errors = validateSurfaceManifestSchema.errors
-		if (!errors) throw new Error(`Manifest failed validation with unknown reason`)
+/**
+ * Validate that a manifest looks correctly populated.
+ *
+ * @param manifest the manifest to validate
+ * @param looseChecks when `true`, skip the checks that reject leftover module
+ *   template placeholder values. Used while a module is still being developed.
+ */
+export function validateSurfaceManifest(
+	manifest: unknown,
+	looseChecks: boolean,
+): asserts manifest is SurfaceModuleManifest {
+	const schema = looseChecks ? looseManifestSchema : strictManifestSchema
 
-		throw new Error(`Manifest validation failed: ${JSON.stringify(errors)}`)
-	}
-
-	if (!looseChecks) {
-		const manifestStr = JSON.stringify(manifest)
-		if (manifestStr.includes('your-module-name'))
-			throw new Error(`Manifest incorrectly references template module 'your-module-name'`)
-
-		if (manifestStr.includes('module-shortname'))
-			throw new Error(`Manifest incorrectly references template module 'module-shortname'`)
-
-		if (manifestStr.includes('A short one line description of your module'))
-			throw new Error(`Manifest incorrectly references template module 'A short one line description of your module'`)
-
-		if (manifestStr.includes('Your name'))
-			throw new Error(`Manifest incorrectly references template module 'Your name'`)
-
-		if (manifestStr.includes('Your email'))
-			throw new Error(`Manifest incorrectly references template module 'Your email'`)
-
-		if (manifestStr.includes('Your company'))
-			throw new Error(`Manifest incorrectly references template module 'Your company'`)
-
-		if (manifestStr.includes('Your product'))
-			throw new Error(`Manifest incorrectly references template module 'Your product'`)
+	const result = schema.safeParse(manifest)
+	if (!result.success) {
+		throw new Error(`Manifest validation failed: ${formatValidationError(result.error)}`)
 	}
 }

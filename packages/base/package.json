@@ -24,12 +24,13 @@
 		"README.md",
 		"CHANGELOG.md",
 		"dist",
-		"generated",
 		"assets",
 		"lib"
 	],
 	"devDependencies": {
-		"ajv": "^8.20.0",
 		"typedoc": "^0.28.20"
+	},
+	"dependencies": {
+		"zod": "^4.4.3"
 	}
 }

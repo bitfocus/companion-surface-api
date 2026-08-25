@@ -22,15 +22,15 @@ function validLayout(overrides: Partial<SurfaceSchemaLayoutDefinition> = {}): Su
 describe('validateSurfaceLayout', () => {
 	describe('basic type validation', () => {
 		it('throws when passed null', () => {
-			expect(() => validateSurfaceLayout(null as any)).toThrow('Surface layout is not an object')
+			expect(() => validateSurfaceLayout(null as any)).toThrow('Surface layout validation failed')
 		})
 
 		it('throws when passed undefined', () => {
-			expect(() => validateSurfaceLayout(undefined as any)).toThrow('Surface layout is not an object')
+			expect(() => validateSurfaceLayout(undefined as any)).toThrow('Surface layout validation failed')
 		})
 
 		it('throws when passed a string', () => {
-			expect(() => validateSurfaceLayout('hello' as any)).toThrow('Surface layout is not an object')
+			expect(() => validateSurfaceLayout('hello' as any)).toThrow('Surface layout validation failed')
 		})
 	})
 
@@ -60,8 +60,10 @@ describe('validateSurfaceLayout', () => {
 		)
 	})
 
-	it('throws on additional unknown properties', () => {
-		expect(() => validateSurfaceLayout(validLayout({ extra: true } as any))).toThrow('Surface layout validation failed')
+	it('tolerates additional unknown top-level properties (lenient, forward-compatible)', () => {
+		// Unknown keys are stripped rather than rejected, so newer layouts with
+		// extra fields still validate against an older schema.
+		expect(() => validateSurfaceLayout(validLayout({ extra: true } as any))).not.toThrow()
 	})
 
 	it('throws when leds config is missing required fields', () => {

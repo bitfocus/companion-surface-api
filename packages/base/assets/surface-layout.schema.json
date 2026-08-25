@@ -1,67 +1,33 @@
 {
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "/assets/surface-layout.schema.json",
 	"title": "SurfaceSchemaLayoutDefinition",
-	"description": "Schema describing a surface layout: default styling and a map of controls with positions and optional style overrides.",
 	"type": "object",
+	"properties": {
+		"stylePresets": {
+			"type": "object",
+			"properties": { "default": { "$ref": "#/$defs/SurfaceSchemaControlStylePreset" } },
+			"required": ["default"],
+			"additionalProperties": { "$ref": "#/$defs/SurfaceSchemaControlStylePreset" },
+			"description": "Named collection of style presets. The preset named `default` is required and is used as the fallback style for controls when no `stylePreset` is specified."
+		},
+		"controls": {
+			"type": "object",
+			"propertyNames": { "type": "string", "pattern": "^[a-zA-Z0-9\\-/]+$" },
+			"additionalProperties": { "$ref": "#/$defs/SurfaceSchemaControlDefinition" }
+		}
+	},
+	"required": ["stylePresets", "controls"],
+	"description": "Schema describing a surface layout: default styling and a map of controls with positions and optional style overrides.",
 	"$defs": {
-		"size": {
-			"title": "SurfaceSchemaBitmapConfig",
-			"description": "Bitmap content dimensions and format.",
-			"type": "object",
-			"properties": {
-				"w": {
-					"description": "Width in pixels (non-negative).",
-					"type": "integer",
-					"minimum": 0
-				},
-				"h": {
-					"description": "Height in pixels (non-negative).",
-					"type": "integer",
-					"minimum": 0
-				},
-				"format": {
-					"description": "Buffer pixel format",
-					"type": "string",
-					"title": "SurfaceSchemaPixelFormat",
-					"enum": ["rgb", "rgba", "bgr", "bgra"],
-					"default": "rgb"
-				}
-			},
-			"required": ["w", "h"],
-			"additionalProperties": false
-		},
-		"leds": {
-			"title": "SurfaceSchemaLedsConfig",
-			"description": "If set, the control has an addressable strip/ring of LEDs (e.g. the ring around a Stream Deck Studio encoder) and requests LED colours to be reported. Colours are reported via `SurfaceDrawProps.leds` as a packed RGB buffer, one entry per segment.",
-			"type": "object",
-			"properties": {
-				"segments": {
-					"description": "The number of individually addressable LED segments.",
-					"type": "integer",
-					"minimum": 1
-				},
-				"mode": {
-					"description": "How Companion maps a gauge onto these LEDs. `full-ring`: the LEDs form a complete circle and the gauge is rendered faithfully (angles, deadzone and colours respected 1:1); segment 0 is at 6 o'clock and indices increase clockwise. `simple`: any other shape  where the value is swept across all segments, with segment 0 as the 0% end. In both cases the surface re-maps to its physical wiring locally if it differs from these conventions.",
-					"type": "string",
-					"enum": ["full-ring", "simple"]
-				}
-			},
-			"required": ["segments", "mode"],
-			"additionalProperties": false
-		},
-		"stylePreset": {
-			"title": "SurfaceSchemaControlStylePreset",
-			"description": "Styling options that can be applied to controls. Can be used as the default style or as per-control overrides.",
+		"SurfaceSchemaControlStylePreset": {
 			"type": "object",
 			"properties": {
 				"bitmap": {
 					"description": "If set, bitmaps of the specified size will be reported.",
-					"$ref": "#/$defs/size"
+					"$ref": "#/$defs/SurfaceSchemaBitmapConfig"
 				},
-				"text": {
-					"description": "If true, the control requests text to be reported.",
-					"type": "boolean"
-				},
+				"text": { "description": "If true, the control requests text to be reported.", "type": "boolean" },
 				"textStyle": {
 					"description": "If true, the control requests text style properties to be reported",
 					"type": "boolean"
@@ -73,60 +39,82 @@
 				},
 				"leds": {
 					"description": "If set, the control has an addressable strip/ring of LEDs and requests LED colours to be reported.",
-					"$ref": "#/$defs/leds"
+					"$ref": "#/$defs/SurfaceSchemaLedsConfig"
 				}
 			},
-			"additionalProperties": false
-		}
-	},
-	"properties": {
-		"stylePresets": {
-			"description": "Named collection of style presets. The preset named `default` is required and is used as the fallback style for controls when no `stylePreset` is specified.",
+			"description": "Styling options that can be applied to controls. Can be used as the default style or as per-control overrides.",
+			"title": "SurfaceSchemaControlStylePreset"
+		},
+		"SurfaceSchemaBitmapConfig": {
 			"type": "object",
 			"properties": {
-				"default": {
-					"$ref": "#/$defs/stylePreset"
-				}
+				"w": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 9007199254740991,
+					"description": "Width in pixels (non-negative)."
+				},
+				"h": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 9007199254740991,
+					"description": "Height in pixels (non-negative)."
+				},
+				"format": { "default": "rgb", "$ref": "#/$defs/SurfaceSchemaPixelFormat" }
 			},
-			"patternProperties": {
-				"^.+$": {
-					"$ref": "#/$defs/stylePreset"
-				}
-			},
-			"required": ["default"],
-			"additionalProperties": false
+			"required": ["w", "h"],
+			"description": "Bitmap content dimensions and format.",
+			"title": "SurfaceSchemaBitmapConfig"
 		},
-		"controls": {
+		"SurfaceSchemaPixelFormat": {
+			"type": "string",
+			"enum": ["rgb", "rgba", "bgr", "bgra"],
+			"description": "Buffer pixel format",
+			"title": "SurfaceSchemaPixelFormat"
+		},
+		"SurfaceSchemaLedsConfig": {
 			"type": "object",
-			"patternProperties": {
-				"^[a-zA-Z0-9\\-\\/]+$": {
-					"title": "SurfaceSchemaControlDefinition",
-					"description": "Single control definition. The id must be unique and may be user facing in logs. Typically the id would be in the form of 1/0, matching the row/column of the control.",
-					"type": "object",
-					"properties": {
-						"row": {
-							"description": "Zero-based row index for layout placement.",
-							"type": "integer",
-							"minimum": 0
-						},
-						"column": {
-							"description": "Zero-based column index for layout placement.",
-							"type": "integer",
-							"minimum": 0
-						},
-						"stylePreset": {
-							"description": "Optional name of a style preset defined in `stylePresets`. If present, the control will use the named preset instead of the default style.",
-							"type": "string",
-							"pattern": "^.+$"
-						}
-					},
-					"required": ["row", "column"],
-					"additionalProperties": false
+			"properties": {
+				"segments": {
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 9007199254740991,
+					"description": "The number of individually addressable LED segments."
+				},
+				"mode": {
+					"type": "string",
+					"enum": ["full-ring", "simple"],
+					"description": "How Companion maps a gauge onto these LEDs. `full-ring`: the LEDs form a complete circle and the gauge is rendered faithfully (angles, deadzone and colours respected 1:1); segment 0 is at 6 o'clock and indices increase clockwise. `simple`: any other shape  where the value is swept across all segments, with segment 0 as the 0% end. In both cases the surface re-maps to its physical wiring locally if it differs from these conventions."
 				}
 			},
-			"additionalProperties": false
+			"required": ["segments", "mode"],
+			"description": "If set, the control has an addressable strip/ring of LEDs (e.g. the ring around a Stream Deck Studio encoder) and requests LED colours to be reported. Colours are reported via `SurfaceDrawProps.leds` as a packed RGB buffer, one entry per segment.",
+			"title": "SurfaceSchemaLedsConfig"
+		},
+		"SurfaceSchemaControlDefinition": {
+			"type": "object",
+			"properties": {
+				"row": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 9007199254740991,
+					"description": "Zero-based row index for layout placement."
+				},
+				"column": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 9007199254740991,
+					"description": "Zero-based column index for layout placement."
+				},
+				"stylePreset": {
+					"description": "Optional name of a style preset defined in `stylePresets`. If present, the control will use the named preset instead of the default style.",
+					"type": "string",
+					"pattern": "^.+$"
+				}
+			},
+			"required": ["row", "column"],
+			"description": "Single control definition. The id must be unique and may be user facing in logs. Typically the id would be in the form of 1/0, matching the row/column of the control.",
+			"title": "SurfaceSchemaControlDefinition"
 		}
-	},
-	"required": ["stylePresets", "controls"],
-	"additionalProperties": false
+	}
 }

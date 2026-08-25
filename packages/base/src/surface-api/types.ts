@@ -1,6 +1,6 @@
 import type { SurfacePincodeMap } from './pincode.js'
 import type { SurfaceInstance } from './instance.js'
-import type { SurfaceSchemaLayoutDefinition } from '../../generated/surface-layout.d.ts'
+import type { SurfaceSchemaLayoutDefinition } from '../surface-layout-schema.js'
 import type { OptionsObject, SomeCompanionInputField } from './input.js'
 
 /**
