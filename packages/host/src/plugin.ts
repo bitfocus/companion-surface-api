@@ -7,6 +7,7 @@ import {
 	type SurfaceDrawProps,
 	type SurfacePlugin,
 	DetectionSurfaceInfo,
+	validateSurfaceLayout,
 } from '@companion-surface/base'
 import type { SurfaceHostContext } from './context.js'
 import type { PluginFeatures, CheckDeviceResult, OpenDeviceResult, SurfaceRotation } from './types.js'
@@ -232,6 +233,10 @@ export class PluginWrapper<TInfo = unknown> {
 		let surface: OpenSurfaceResult | undefined
 		try {
 			surface = await this.#plugin.openSurface(resolvedSurfaceId, pluginInfo, surfaceContext)
+
+			// Validate the layout against the schema before handing it off to the host/app,
+			// so a malformed layout fails loudly here instead of downstream in the app.
+			validateSurfaceLayout(surface.registerProps.surfaceLayout)
 
 			await surface.surface.init()
 		} catch (e) {
