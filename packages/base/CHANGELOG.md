@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.4.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.3.0...companion-surface-base-v1.4.0) (2026-08-25)
+
+
+### Features
+
+* allow surfaces to provide a delta for rotation events ([c2d781c](https://github.com/bitfocus/companion-surface-api/commit/c2d781cc10f369f673d6f83be2337db28d19a9d2))
+* generate manifest schema and validators from a single zod definition ([5af6775](https://github.com/bitfocus/companion-surface-api/commit/5af677539eee79252e4b40fe5c7d99964a83e32f))
+* support surface gauge leds ([#75](https://github.com/bitfocus/companion-surface-api/issues/75)) ([a42afb9](https://github.com/bitfocus/companion-surface-api/commit/a42afb9a66785db0d29eccae3b5866712653afbb))
+
+
+### Bug Fixes
+
+* add supportsLeds to HostCapabilities ([17ba70a](https://github.com/bitfocus/companion-surface-api/commit/17ba70a55a0bb637f0a50af4cadce36182f7ba8d))
+* ensure surface layout matches schema ([71fa68a](https://github.com/bitfocus/companion-surface-api/commit/71fa68a5db50066ac525ebe16ae381eaa4ebf7bc))
+
 ## [1.3.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.2.1...companion-surface-base-v1.3.0) (2026-07-12)
 
 
