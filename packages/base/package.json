@@ -23,6 +23,7 @@
 	"files": [
 		"README.md",
 		"CHANGELOG.md",
+		"LICENSE",
 		"dist",
 		"assets",
 		"lib"

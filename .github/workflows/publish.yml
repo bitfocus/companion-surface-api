@@ -212,6 +212,9 @@ jobs:
           fi
 
           yarn build
+
+          # Include the repo-root license in the published package
+          cp LICENSE "${{ needs.determine-package.outputs.package-path }}/LICENSE"
         env:
           CI: true
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -224,6 +227,7 @@ jobs:
             ${{ needs.determine-package.outputs.package-path }}/package.json
             ${{ needs.determine-package.outputs.package-path }}/README.md
             ${{ needs.determine-package.outputs.package-path }}/CHANGELOG.md
+            ${{ needs.determine-package.outputs.package-path }}/LICENSE
             ${{ needs.determine-package.outputs.package-path }}/generated
             ${{ needs.determine-package.outputs.package-path }}/assets
           retention-days: 1
