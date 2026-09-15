@@ -8,6 +8,9 @@ import {
 	type SurfacePlugin,
 	DetectionSurfaceInfo,
 	validateSurfaceLayout,
+	validateSurfaceAppearance,
+	appearanceCoversLayout,
+	type SurfaceAppearanceDefinition,
 } from '@companion-surface/base'
 import type { SurfaceHostContext } from './context.js'
 import type { PluginFeatures, CheckDeviceResult, OpenDeviceResult, SurfaceRotation } from './types.js'
@@ -249,6 +252,21 @@ export class PluginWrapper<TInfo = unknown> {
 			throw e
 		}
 
+		// Optional, unlike the layout: a bad one is dropped and the face derived instead, never failing the open
+		let surfaceAppearance: SurfaceAppearanceDefinition | null = surface.registerProps.surfaceAppearance ?? null
+		if (surfaceAppearance) {
+			try {
+				validateSurfaceAppearance(surfaceAppearance)
+
+				// All or nothing, rather than mixing a declared face with derived geometry for the rest
+				const missing = appearanceCoversLayout(surface.registerProps.surfaceLayout, surfaceAppearance)
+				if (missing.length > 0) throw new Error(`appearance is missing controls: ${missing.join(', ')}`)
+			} catch (e) {
+				this.#logger.warn(`Ignoring surface appearance for ${resolvedSurfaceId}: ${e}`)
+				surfaceAppearance = null
+			}
+		}
+
 		// Wrap the surface
 		const wrapped = new SurfaceProxy(this.#host, surfaceContext, surface.surface, surface.registerProps)
 		this.#openSurfaces.set(resolvedSurfaceId, wrapped)
@@ -262,6 +280,7 @@ export class PluginWrapper<TInfo = unknown> {
 			description: description,
 			supportsBrightness: surface.registerProps.brightness,
 			surfaceLayout: surface.registerProps.surfaceLayout,
+			surfaceAppearance,
 			transferVariables: surface.registerProps.transferVariables ?? null,
 			location: surface.registerProps.location ?? null,
 			isRemote,
