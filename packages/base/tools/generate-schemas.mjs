@@ -6,6 +6,7 @@ import z from 'zod'
 // Node's TypeScript type-stripping without a separate build step.
 import { buildManifestSchema } from '../src/manifest-schema.ts'
 import { surfaceLayoutSchema } from '../src/surface-layout-schema.ts'
+import { surfaceAppearanceSchema } from '../src/surface-appearance-schema.ts'
 
 /**
  * Never emit `additionalProperties: false`. Closed objects have repeatedly caused
@@ -54,3 +55,8 @@ async function writeSchema(schema, relativePath, title) {
 // leftover module-template placeholders while a module is being developed.
 await writeSchema(buildManifestSchema(true), '/assets/manifest.schema.json', 'SurfaceModuleManifest')
 await writeSchema(surfaceLayoutSchema, '/assets/surface-layout.schema.json', 'SurfaceSchemaLayoutDefinition')
+await writeSchema(
+	surfaceAppearanceSchema,
+	'/assets/surface-appearance.schema.json',
+	'SurfaceSchemaAppearanceDefinition',
+)
