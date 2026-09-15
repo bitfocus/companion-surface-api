@@ -3,6 +3,7 @@ import type {
 	SurfaceInputVariable,
 	SurfaceOutputVariable,
 	SurfaceSchemaLayoutDefinition,
+	SurfaceAppearanceDefinition,
 } from '@companion-surface/base'
 
 export interface PluginFeatures {
@@ -42,6 +43,12 @@ export interface OpenDeviceResult {
 	 * The definition of the controls on the surface and the properties needed for drawing
 	 */
 	surfaceLayout: SurfaceSchemaLayoutDefinition
+	/**
+	 * How to draw the face of this surface, keyed by the same control ids as `surfaceLayout`. Null
+	 * when the surface supplied none, or supplied one which did not validate or missed a control, in
+	 * which case the face has to be derived from the layout.
+	 */
+	surfaceAppearance: SurfaceAppearanceDefinition | null
 	/**
 	 * Describes any custom input or output variables for the surface
 	 * These are typically used for reporting values such as a tbar or battery level.

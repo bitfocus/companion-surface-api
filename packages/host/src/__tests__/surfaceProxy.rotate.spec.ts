@@ -24,6 +24,7 @@ function makeContext() {
 				enc: { row: 0, column: 0 },
 			},
 		},
+		surfaceAppearance: null,
 		pincodeMap: null,
 		location: null,
 		configFields: null,
