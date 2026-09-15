@@ -1,4 +1,3 @@
-import z from 'zod'
 import {
 	surfaceLayoutSchema,
 	type SurfaceSchemaLayoutDefinition,
@@ -8,6 +7,7 @@ import {
 	type SurfaceSchemaLedsConfig,
 	type SurfaceSchemaPixelFormat,
 } from './surface-layout-schema.js'
+import { formatValidationError } from './schema-error.js'
 
 export type {
 	SurfaceSchemaLayoutDefinition,
@@ -16,16 +16,6 @@ export type {
 	SurfaceSchemaBitmapConfig,
 	SurfaceSchemaLedsConfig,
 	SurfaceSchemaPixelFormat,
-}
-
-/** Format zod issues into a single, human readable string. */
-function formatValidationError(error: z.ZodError): string {
-	return error.issues
-		.map((issue) => {
-			const path = issue.path.length > 0 ? `/${issue.path.join('/')}` : ''
-			return path ? `${path} ${issue.message}` : issue.message
-		})
-		.join('; ')
 }
 
 /**
