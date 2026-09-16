@@ -24,6 +24,11 @@ export const MySurfacePlugin: SurfacePlugin = {
     // Clean up
   }
 
+  async getSurfaceModels(): Promise<SurfaceModelDefinition[]> {
+    // The models of surface you support, whether or not one is plugged in
+    return []
+  }
+
   // Implement detection or manual connection methods
 }
 ```
