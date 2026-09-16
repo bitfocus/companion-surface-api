@@ -8,6 +8,11 @@ import {
 	type SurfacePlugin,
 	DetectionSurfaceInfo,
 	validateSurfaceLayout,
+	validateSurfaceAppearance,
+	appearanceCoversLayout,
+	validateSurfaceModelDefinition,
+	type SurfaceModelDefinition,
+	type SurfaceAppearanceDefinition,
 } from '@companion-surface/base'
 import type { SurfaceHostContext } from './context.js'
 import type { PluginFeatures, CheckDeviceResult, OpenDeviceResult, SurfaceRotation } from './types.js'
@@ -22,6 +27,8 @@ export class PluginWrapper<TInfo = unknown> {
 	readonly #firmwareUpdateCheck: FirmwareUpdateCheck
 
 	readonly #openSurfaces = new Map<string, SurfaceProxy | null>() // Null means opening in progress
+
+	#surfaceModels: SurfaceModelDefinition[] = []
 
 	constructor(host: SurfaceHostContext, plugin: SurfacePlugin<TInfo>) {
 		this.#host = host
@@ -113,7 +120,63 @@ export class PluginWrapper<TInfo = unknown> {
 
 		await this.#plugin.init()
 
+		await this.#loadSurfaceModels()
+
 		this.#firmwareUpdateCheck.init()
+	}
+
+	/** The models this plugin supports, as reported after init. Empty until then. */
+	getSurfaceModels(): SurfaceModelDefinition[] {
+		return this.#surfaceModels
+	}
+
+	/**
+	 * Ask the plugin which models it supports. Nothing here may be fatal: a model which does not
+	 * validate, or a plugin which throws when asked, must still leave the plugin initialised.
+	 */
+	async #loadSurfaceModels(): Promise<void> {
+		let models: SurfaceModelDefinition[]
+		try {
+			models = await this.#plugin.getSurfaceModels({ capabilities: this.#host.capabilities })
+		} catch (e) {
+			this.#logger.warn(`Failed to get surface models: ${e}`)
+			return
+		}
+
+		if (!Array.isArray(models)) {
+			this.#logger.warn('Plugin reported surface models which are not an array, ignoring')
+			return
+		}
+
+		const valid: SurfaceModelDefinition[] = []
+		const seenIds = new Set<string>()
+
+		for (const model of models) {
+			const modelId = (model as SurfaceModelDefinition | undefined)?.id
+
+			// The host will key a record by this
+			if (typeof modelId === 'string' && BANNED_PROPS.has(modelId)) {
+				this.#logger.warn(`Surface model id "${modelId}" is a reserved word, ignoring`)
+				continue
+			}
+			if (typeof modelId === 'string' && seenIds.has(modelId)) {
+				this.#logger.warn(`Duplicate surface model id "${modelId}", ignoring`)
+				continue
+			}
+
+			try {
+				validateSurfaceModelDefinition(model)
+			} catch (e) {
+				this.#logger.warn(`Ignoring invalid surface model "${modelId}": ${e}`)
+				continue
+			}
+
+			seenIds.add(model.id)
+			valid.push(model)
+		}
+
+		// Cloned so the plugin cannot change these out from under us by mutating what it handed back
+		this.#surfaceModels = structuredClone(valid)
 	}
 
 	async destroy(): Promise<void> {
@@ -249,6 +312,21 @@ export class PluginWrapper<TInfo = unknown> {
 			throw e
 		}
 
+		// Optional, unlike the layout: a bad one is dropped and the face derived instead, never failing the open
+		let surfaceAppearance: SurfaceAppearanceDefinition | null = surface.registerProps.surfaceAppearance ?? null
+		if (surfaceAppearance) {
+			try {
+				validateSurfaceAppearance(surfaceAppearance)
+
+				// All or nothing, rather than mixing a declared face with derived geometry for the rest
+				const missing = appearanceCoversLayout(surface.registerProps.surfaceLayout, surfaceAppearance)
+				if (missing.length > 0) throw new Error(`appearance is missing controls: ${missing.join(', ')}`)
+			} catch (e) {
+				this.#logger.warn(`Ignoring surface appearance for ${resolvedSurfaceId}: ${e}`)
+				surfaceAppearance = null
+			}
+		}
+
 		// Wrap the surface
 		const wrapped = new SurfaceProxy(this.#host, surfaceContext, surface.surface, surface.registerProps)
 		this.#openSurfaces.set(resolvedSurfaceId, wrapped)
@@ -262,6 +340,7 @@ export class PluginWrapper<TInfo = unknown> {
 			description: description,
 			supportsBrightness: surface.registerProps.brightness,
 			surfaceLayout: surface.registerProps.surfaceLayout,
+			surfaceAppearance,
 			transferVariables: surface.registerProps.transferVariables ?? null,
 			location: surface.registerProps.location ?? null,
 			isRemote,

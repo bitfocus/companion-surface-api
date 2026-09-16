@@ -1,5 +1,7 @@
 export * from './logging.js'
 export * from './manifest.js'
 export * from './surface-api/index.js'
+export * from './surface-appearance.js'
 export * from './surface-layout.js'
+export * from './surface-model.js'
 export * from './util.js'

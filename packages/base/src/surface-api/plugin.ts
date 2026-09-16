@@ -1,6 +1,7 @@
 import type { HIDDevice, OpenSurfaceResult } from './types.js'
 import type { SurfaceContext } from './context.js'
 import type { SurfacePluginDetection } from './detection.js'
+import type { SurfaceModelDefinition, SurfaceModelsContext } from './models.js'
 import { SurfacePluginRemote } from './remote.js'
 
 /**
@@ -37,6 +38,22 @@ export interface SurfacePlugin<TInfo> {
 	 * This will be called once when the plugin is about to be unloaded. You should reset and close any surfaces here, and prepare for being terminated
 	 */
 	destroy(): Promise<void>
+
+	/**
+	 * The models of surface this plugin supports, whether or not one is plugged in
+	 *
+	 * Without this, the host only learns what a surface looks like once one connects, so a user cannot lay out a
+	 * device before it arrives. Your plugin already knows every model it drives, so this is where it says so.
+	 *
+	 * This will be called once, immediately after init() has completed. Return an empty array if the models this
+	 * plugin drives cannot be known ahead of time.
+	 *
+	 * Note: a model's layout is not used for a surface which is connected. A connected surface always reports its
+	 * own via `SurfaceRegisterProps`, which may legitimately differ from the model's.
+	 *
+	 * @param context Information about the host, for building the definitions against
+	 */
+	getSurfaceModels(context: SurfaceModelsContext): Promise<SurfaceModelDefinition[]>
 
 	/**
 	 * Check if a HID device is supported by this plugin
