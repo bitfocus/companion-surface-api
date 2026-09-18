@@ -1,4 +1,5 @@
 import { SurfaceProxy, SurfaceProxyContext } from './surfaceProxy.js'
+import { randomUUID } from 'node:crypto'
 import {
 	createModuleLogger,
 	type RemoteSurfaceConnectionInfo,
@@ -249,8 +250,22 @@ export class PluginWrapper<TInfo = unknown> {
 			throw e
 		}
 
-		// Wrap the surface
-		const wrapped = new SurfaceProxy(this.#host, surfaceContext, surface.surface, surface.registerProps)
+		const hapticFeedbackSupported =
+			surface.registerProps.hapticFeedback === true && typeof surface.surface.triggerHapticFeedback === 'function'
+		if (surface.registerProps.hapticFeedback === true && !hapticFeedbackSupported) {
+			this.#logger.warn(`Surface ${resolvedSurfaceId} registered haptic feedback without an implementation`)
+		}
+
+		// The connection generation is deliberately per open, so a delayed request
+		// cannot target a later instance with the same surface id.
+		const hapticFeedbackConnectionId = hapticFeedbackSupported ? randomUUID() : undefined
+		const wrapped = new SurfaceProxy(
+			this.#host,
+			surfaceContext,
+			surface.surface,
+			surface.registerProps,
+			hapticFeedbackConnectionId,
+		)
 		this.#openSurfaces.set(resolvedSurfaceId, wrapped)
 
 		// Trigger a firmware update check
@@ -261,6 +276,7 @@ export class PluginWrapper<TInfo = unknown> {
 			surfaceId: resolvedSurfaceId,
 			description: description,
 			supportsBrightness: surface.registerProps.brightness,
+			hapticFeedback: hapticFeedbackConnectionId ? { connectionId: hapticFeedbackConnectionId } : undefined,
 			surfaceLayout: surface.registerProps.surfaceLayout,
 			transferVariables: surface.registerProps.transferVariables ?? null,
 			location: surface.registerProps.location ?? null,
@@ -338,6 +354,19 @@ export class PluginWrapper<TInfo = unknown> {
 
 	async closeDevice(surfaceId: string): Promise<void> {
 		this.#cleanupSurfaceById(surfaceId)
+	}
+
+	/**
+	 * Submit one best-effort haptic request to the matching ready surface.
+	 *
+	 * A stale, closed, unsupported, or not-ready connection is intentionally a
+	 * no-op. Promise resolution never acknowledges physical feedback.
+	 */
+	async triggerHapticFeedback(surfaceId: string, connectionId: string): Promise<void> {
+		const surface = this.#openSurfaces.get(surfaceId)
+		if (!surface || surface.hapticFeedbackConnectionId !== connectionId) return
+
+		await surface.triggerHapticFeedback(connectionId)
 	}
 
 	async setBrightness(surfaceId: string, brightness: number): Promise<void> {
