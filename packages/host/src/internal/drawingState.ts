@@ -54,11 +54,13 @@ export class DrawingState {
 					this.#logger.error(`Failed to abort queue: ${e}`)
 				})
 				.then(async () => {
-					if (this.#execBeforeRunQueue) {
-						await this.#execBeforeRunQueue().catch((e) => {
+					// Loop, as another transition may have supplied a new fn while the previous one was running
+					while (this.#execBeforeRunQueue) {
+						const fn = this.#execBeforeRunQueue
+						this.#execBeforeRunQueue = null
+						await fn().catch((e) => {
 							this.#logger.error(`Failed to run before queue: ${e}`)
 						})
-						this.#execBeforeRunQueue = null
 					}
 				})
 				.finally(() => {
