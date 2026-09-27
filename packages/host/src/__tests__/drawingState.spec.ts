@@ -316,5 +316,35 @@ describe('DrawingState', () => {
 			// the original queue when state1 was aborted.
 			expect(intermediateFn).not.toHaveBeenCalled()
 		})
+
+		it('runs a fnBeforeRunQueue supplied while a previous one is still running', async () => {
+			const ds = new DrawingState('s1', 'idle')
+			const log: string[] = []
+
+			ds.abortQueued('draw', async () => {
+				log.push('blank1 start')
+				await new Promise((r) => setTimeout(r, 50))
+				log.push('blank1 end')
+			})
+			for (let k = 0; k < 4; k++) {
+				ds.queueJob(`key${k}`, async (key) => {
+					log.push(`draw ${key}`)
+				})
+			}
+
+			await vi.advanceTimersByTimeAsync(10)
+
+			ds.abortQueued('draw', async () => {
+				log.push('blank2')
+			})
+			ds.queueJob('key9', async (key) => {
+				log.push(`draw ${key}`)
+			})
+
+			await vi.runAllTimersAsync()
+
+			// key0-3 belong to the superseded queue and are dropped
+			expect(log).toEqual(['blank1 start', 'blank1 end', 'blank2', 'draw key9'])
+		})
 	})
 })
