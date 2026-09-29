@@ -22,6 +22,7 @@ export class PluginWrapper<TInfo = unknown> {
 	readonly #firmwareUpdateCheck: FirmwareUpdateCheck
 
 	readonly #openSurfaces = new Map<string, SurfaceProxy | null>() // Null means opening in progress
+	readonly #closedWhileOpening = new Set<string>()
 
 	constructor(host: SurfaceHostContext, plugin: SurfacePlugin<TInfo>) {
 		this.#host = host
@@ -239,6 +240,11 @@ export class PluginWrapper<TInfo = unknown> {
 			validateSurfaceLayout(surface.registerProps.surfaceLayout)
 
 			await surface.surface.init()
+
+			// A disconnect/close may have arrived while opening; don't report a dead surface as open
+			if (this.#closedWhileOpening.has(resolvedSurfaceId)) {
+				throw new Error(`Surface ${resolvedSurfaceId} was closed while opening`)
+			}
 		} catch (e) {
 			// Remove from list as it has failed
 			this.#openSurfaces.delete(resolvedSurfaceId)
@@ -247,6 +253,8 @@ export class PluginWrapper<TInfo = unknown> {
 			if (surface) surface.surface?.close().catch(() => {}) // Ignore errors here
 
 			throw e
+		} finally {
+			this.#closedWhileOpening.delete(resolvedSurfaceId)
 		}
 
 		// Wrap the surface
@@ -321,6 +329,12 @@ export class PluginWrapper<TInfo = unknown> {
 
 	#cleanupSurfaceById(surfaceId: string): void {
 		const surface = this.#openSurfaces.get(surfaceId)
+		if (surface === null) {
+			// Still opening, let #openDeviceInner abort once it has finished
+			this.#logger.info(`Surface ${surfaceId} closed while opening`)
+			this.#closedWhileOpening.add(surfaceId)
+			return
+		}
 		if (!surface) return
 
 		try {
