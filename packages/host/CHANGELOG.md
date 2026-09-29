@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.4](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.3.3...companion-surface-host-v1.3.4) (2026-09-29)
+
+
+### Bug Fixes
+
+* don't lose a disconnect that arrives while a surface is opening ([661824c](https://github.com/bitfocus/companion-surface-api/commit/661824cf75d6edd66f0c0105db98f44ab506db07))
+* don't lose fnBeforeRunQueue supplied during an in-progress transition ([6567175](https://github.com/bitfocus/companion-surface-api/commit/6567175c225c2690e61c494f4416facd77e5c54d))
+
 ## [1.3.3](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.3.2...companion-surface-host-v1.3.3) (2026-07-12)
 
 
