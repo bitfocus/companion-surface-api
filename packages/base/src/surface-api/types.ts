@@ -69,7 +69,8 @@ export interface SurfaceRegisterProps {
 	 * Which of the models this plugin declares from `getSurfaceModels` this surface is, by that model's id. Lets
 	 * the host tell which model a connected surface is without matching their names, which a plugin is free to
 	 * word differently. Set to null if it is none of them.
-	 * Note: This is used for UI hinting, the appearance provided here by `surfaceAppearance` will be used regardless of the `modelId`.
+	 * Note: This only identifies the surface as being of that model. The surface's own `surfaceLayout` and
+	 * `surfaceAppearance` are always what it is drawn from, never the model's.
 	 */
 	modelId: string | null
 	/**
