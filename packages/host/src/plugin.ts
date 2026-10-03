@@ -8,6 +8,11 @@ import {
 	type SurfacePlugin,
 	DetectionSurfaceInfo,
 	validateSurfaceLayout,
+	validateSurfaceAppearance,
+	appearanceCoversLayout,
+	validateSurfaceModelDefinition,
+	type SurfaceModelDefinition,
+	type SurfaceAppearanceDefinition,
 } from '@companion-surface/base'
 import type { SurfaceHostContext } from './context.js'
 import type { PluginFeatures, CheckDeviceResult, OpenDeviceResult, SurfaceRotation } from './types.js'
@@ -23,6 +28,8 @@ export class PluginWrapper<TInfo = unknown> {
 
 	readonly #openSurfaces = new Map<string, SurfaceProxy | null>() // Null means opening in progress
 	readonly #closedWhileOpening = new Set<string>()
+
+	#surfaceModels: SurfaceModelDefinition[] = []
 
 	constructor(host: SurfaceHostContext, plugin: SurfacePlugin<TInfo>) {
 		this.#host = host
@@ -114,7 +121,67 @@ export class PluginWrapper<TInfo = unknown> {
 
 		await this.#plugin.init()
 
+		await this.#loadSurfaceModels()
+
 		this.#firmwareUpdateCheck.init()
+	}
+
+	/** The models this plugin supports, as reported after init. Empty until then. */
+	getSurfaceModels(): SurfaceModelDefinition[] {
+		return this.#surfaceModels
+	}
+
+	/**
+	 * Ask the plugin which models it supports. Nothing here may be fatal: a model which does not
+	 * validate, or a plugin which throws when asked, must still leave the plugin initialised.
+	 */
+	async #loadSurfaceModels(): Promise<void> {
+		let models: SurfaceModelDefinition[]
+		try {
+			models = await this.#plugin.getSurfaceModels({ capabilities: this.#host.capabilities })
+		} catch (e) {
+			this.#logger.warn(`Failed to get surface models: ${e}`)
+			return
+		}
+
+		if (!Array.isArray(models)) {
+			this.#logger.warn('Plugin reported surface models which are not an array, ignoring')
+			return
+		}
+
+		const valid: SurfaceModelDefinition[] = []
+		const seenIds = new Set<string>()
+
+		for (const model of models) {
+			const modelId = (model as SurfaceModelDefinition | undefined)?.id
+
+			// The host will key a record by this
+			if (typeof modelId === 'string' && BANNED_PROPS.has(modelId)) {
+				this.#logger.warn(`Surface model id "${modelId}" is a reserved word, ignoring`)
+				continue
+			}
+			if (typeof modelId === 'string' && seenIds.has(modelId)) {
+				this.#logger.warn(`Duplicate surface model id "${modelId}", ignoring`)
+				continue
+			}
+
+			let cloned: SurfaceModelDefinition
+			try {
+				validateSurfaceModelDefinition(model)
+
+				// Cloned so the plugin cannot change these out from under us by mutating what it handed back.
+				// Inside the try, as a model which validates can still fail to clone (eg a function valued property)
+				cloned = structuredClone(model)
+			} catch (e) {
+				this.#logger.warn(`Ignoring invalid surface model "${modelId}": ${e}`)
+				continue
+			}
+
+			seenIds.add(cloned.id)
+			valid.push(cloned)
+		}
+
+		this.#surfaceModels = valid
 	}
 
 	async destroy(): Promise<void> {
@@ -257,6 +324,30 @@ export class PluginWrapper<TInfo = unknown> {
 			this.#closedWhileOpening.delete(resolvedSurfaceId)
 		}
 
+		// Optional, unlike the layout: a bad one is dropped and the face derived instead, never failing the open
+		let surfaceAppearance: SurfaceAppearanceDefinition | null = null
+		if (surface.registerProps.surfaceAppearance != null) {
+			try {
+				// Snapshot first, so the plugin mutating its object later cannot change what was validated
+				surfaceAppearance = structuredClone(surface.registerProps.surfaceAppearance)
+				validateSurfaceAppearance(surfaceAppearance)
+
+				// All or nothing, rather than mixing a declared face with derived geometry for the rest
+				const missing = appearanceCoversLayout(surface.registerProps.surfaceLayout, surfaceAppearance)
+				if (missing.length > 0) throw new Error(`appearance is missing controls: ${missing.join(', ')}`)
+			} catch (e) {
+				this.#logger.warn(`Ignoring surface appearance for ${resolvedSurfaceId}: ${e}`)
+				surfaceAppearance = null
+			}
+		}
+
+		// Only worth reporting if it is a model the host has been told about, as it is only useful for finding that model
+		let modelId = surface.registerProps.modelId ?? null
+		if (modelId !== null && !this.#surfaceModels.some((model) => model.id === modelId)) {
+			this.#logger.warn(`Ignoring model id "${modelId}" for ${resolvedSurfaceId}: not one of the declared models`)
+			modelId = null
+		}
+
 		// Wrap the surface
 		const wrapped = new SurfaceProxy(this.#host, surfaceContext, surface.surface, surface.registerProps)
 		this.#openSurfaces.set(resolvedSurfaceId, wrapped)
@@ -270,6 +361,8 @@ export class PluginWrapper<TInfo = unknown> {
 			description: description,
 			supportsBrightness: surface.registerProps.brightness,
 			surfaceLayout: surface.registerProps.surfaceLayout,
+			surfaceAppearance,
+			modelId,
 			transferVariables: surface.registerProps.transferVariables ?? null,
 			location: surface.registerProps.location ?? null,
 			isRemote,
