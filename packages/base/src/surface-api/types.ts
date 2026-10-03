@@ -120,6 +120,12 @@ export interface SurfaceDrawProps {
 	text?: string
 
 	/**
+	 * Whether the control is currently pressed.
+	 * This can be used by surfaces to show pressed feedback, such as for surfaces with text-only displays
+	 */
+	pressed: boolean
+
+	/**
 	 * If the control's style preset requested `leds`, this is the colour for each LED segment,
 	 * packed as raw RGB (3 bytes per segment), in logical order (index 0 first).
 	 * The length is always `leds.segments * 3`.

@@ -47,7 +47,7 @@ describe('SurfaceProxy leds validation', () => {
 		const { proxy, surface } = makeProxy()
 
 		const leds = new Uint8Array(3 * 3)
-		await proxy.draw({ controlId: 'led-test', leds })
+		await proxy.draw({ controlId: 'led-test', pressed: false, leds })
 		await flush()
 
 		expect(surface.draw.mock.calls.length).toBeGreaterThan(0)
@@ -59,7 +59,7 @@ describe('SurfaceProxy leds validation', () => {
 		const { proxy, surface } = makeProxy()
 
 		const leds = new Uint8Array(2 * 3) // wrong: only 2 segments
-		await proxy.draw({ controlId: 'led-test', color: '#ffffff', leds })
+		await proxy.draw({ controlId: 'led-test', pressed: false, color: '#ffffff', leds })
 		await flush()
 
 		expect(surface.draw.mock.calls.length).toBeGreaterThan(0)

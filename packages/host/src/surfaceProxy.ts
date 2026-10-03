@@ -302,6 +302,7 @@ export class SurfaceProxy {
 				image,
 				color,
 				text,
+				pressed: false,
 			})
 		})
 	}
