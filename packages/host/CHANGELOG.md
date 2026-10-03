@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.4.1...companion-surface-host-v1.4.2) (2026-10-03)
+
+
+### Bug Fixes
+
+* expose pressed state ([530325f](https://github.com/bitfocus/companion-surface-api/commit/530325f104d5a42d3badfb7b8018b3c1ca930fdd))
+
 ## [1.4.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.4.0...companion-surface-host-v1.4.1) (2026-09-29)
 
 
