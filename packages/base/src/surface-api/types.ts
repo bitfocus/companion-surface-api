@@ -55,6 +55,13 @@ export interface SurfaceRegisterProps {
 	 */
 	brightness: boolean
 	/**
+	 * Whether this opened surface supports short, implementation-defined haptic feedback.
+	 *
+	 * Omit this for unsupported surfaces. When set, the SurfaceInstance must also
+	 * implement triggerHapticFeedback.
+	 */
+	hapticFeedback?: boolean
+	/**
 	 * The definition of the controls on the surface and the properties needed for drawing
 	 */
 	surfaceLayout: SurfaceSchemaLayoutDefinition

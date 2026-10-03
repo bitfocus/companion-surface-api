@@ -39,6 +39,15 @@ export interface OpenDeviceResult {
 	 */
 	supportsBrightness: boolean
 	/**
+	 * A per-open connection generation for best-effort haptic feedback.
+	 *
+	 * When absent, haptic feedback is unsupported. Pass connectionId back to
+	 * PluginWrapper.triggerHapticFeedback; it is invalidated when this surface closes.
+	 */
+	hapticFeedback?: {
+		connectionId: string
+	}
+	/**
 	 * The definition of the controls on the surface and the properties needed for drawing
 	 */
 	surfaceLayout: SurfaceSchemaLayoutDefinition

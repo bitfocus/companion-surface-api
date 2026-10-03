@@ -34,6 +34,8 @@ export class SurfaceProxy {
 	readonly #registerProps: SurfaceRegisterProps
 
 	readonly #drawQueue: DrawingState
+	#hapticFeedbackConnectionId: string | undefined
+	#isReady = false
 
 	#pincodeCharacterCount = 0
 	#pincodeRotation: SurfaceRotation = 0
@@ -48,18 +50,23 @@ export class SurfaceProxy {
 	get registerProps(): SurfaceRegisterProps {
 		return this.#registerProps
 	}
+	get hapticFeedbackConnectionId(): string | undefined {
+		return this.#hapticFeedbackConnectionId
+	}
 
 	constructor(
 		host: SurfaceHostContext,
 		context: SurfaceProxyContext,
 		surface: SurfaceInstance,
 		registerProps: SurfaceRegisterProps,
+		hapticFeedbackConnectionId?: string,
 	) {
 		this.#logger = createModuleLogger(`SurfaceProxy/${surface.surfaceId}`)
 		this.#host = host
 		this.#context = context
 		this.#surface = surface
 		this.#registerProps = registerProps
+		this.#hapticFeedbackConnectionId = hapticFeedbackConnectionId
 
 		this.#drawQueue = new DrawingState(this.surfaceId, 'preinit')
 
@@ -68,6 +75,8 @@ export class SurfaceProxy {
 	}
 
 	async close(): Promise<void> {
+		this.#hapticFeedbackConnectionId = undefined
+		this.#isReady = false
 		this.#drawQueue.abortQueued('closed')
 
 		return this.#surface.close()
@@ -93,13 +102,40 @@ export class SurfaceProxy {
 	}
 
 	async readySurface(config: Record<string, any>): Promise<void> {
+		this.#isReady = false
 		this.#drawQueue.abortQueued('reinit')
 
 		if (this.#surface.updateConfig) {
 			await this.#surface.updateConfig(config)
 		}
 
-		return this.#surface.ready()
+		await this.#surface.ready()
+		this.#isReady = true
+	}
+
+	/**
+	 * Submit a one-shot haptic request for the matching open connection.
+	 *
+	 * This intentionally does not use the draw queue. It resolves after the
+	 * request has been submitted or dropped; it is not a physical-delivery ACK.
+	 * Requests during initialization/reinitialization are dropped, including when
+	 * configuration or readiness failed. They are never saved for later playback.
+	 */
+	async triggerHapticFeedback(connectionId: string): Promise<void> {
+		if (
+			this.#hapticFeedbackConnectionId !== connectionId ||
+			!this.#isReady ||
+			this.#registerProps.hapticFeedback !== true ||
+			!this.#surface.triggerHapticFeedback
+		) {
+			return
+		}
+
+		try {
+			await this.#surface.triggerHapticFeedback()
+		} catch (e) {
+			this.#logger.warn(`Haptic feedback failed: ${e}`)
+		}
 	}
 
 	async setBrightness(percent: number): Promise<void> {

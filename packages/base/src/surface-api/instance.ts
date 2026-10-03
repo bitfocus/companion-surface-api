@@ -36,6 +36,14 @@ export interface SurfaceInstance {
 	 */
 	ready(): Promise<void>
 
+	/**
+	 * Request the surface's short, implementation-defined haptic feedback effect.
+	 *
+	 * This is a best-effort submission only. Resolving does not confirm that the
+	 * effect was felt, and implementations must not rely on a host timeout or ACK.
+	 */
+	triggerHapticFeedback?(): Promise<void>
+
 	// updateCapabilities(capabilities: ClientCapabilities): void
 
 	/**
