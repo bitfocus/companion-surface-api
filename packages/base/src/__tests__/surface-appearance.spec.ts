@@ -184,6 +184,22 @@ describe('validateSurfaceAppearance', () => {
 			)
 		})
 
+		it('throws on base64 which is not padded to a whole quantum', () => {
+			for (const payload of ['A=', 'AAAAA', 'AAAAA=', 'AA=', 'AAAA=']) {
+				expect(() =>
+					validateSurfaceAppearance(validAppearance({ bodyImage: `data:image/png;base64,${payload}` })),
+				).toThrow('Surface appearance validation failed')
+			}
+		})
+
+		it('accepts padded base64', () => {
+			for (const payload of ['AA==', 'AAA=', 'AAAAAA==']) {
+				expect(() =>
+					validateSurfaceAppearance(validAppearance({ bodyImage: `data:image/png;base64,${payload}` })),
+				).not.toThrow()
+			}
+		})
+
 		it('throws when the image is over the size cap', () => {
 			const oversized = `data:image/png;base64,${'A'.repeat(MAX_BODY_IMAGE_LENGTH)}`
 			expect(() => validateSurfaceAppearance(validAppearance({ bodyImage: oversized }))).toThrow(

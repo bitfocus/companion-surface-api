@@ -81,6 +81,25 @@ describe('PluginWrapper surface appearance validation', () => {
 		expect(result?.surfaceAppearance).toBeNull()
 	})
 
+	it('reports null for an appearance which is falsy but not null', async () => {
+		const { wrapper } = makeWrapper(false as unknown as SurfaceAppearanceDefinition)
+
+		const result = await wrapper.openHidDevice(mock<HIDDevice>(), 'test-surface')
+
+		expect(result).not.toBeNull()
+		expect(result?.surfaceAppearance).toBeNull()
+	})
+
+	it('reports its own copy, so a plugin mutating its appearance after opening changes nothing', async () => {
+		const appearance = validAppearance()
+		const { wrapper } = makeWrapper(appearance)
+
+		const result = await wrapper.openHidDevice(mock<HIDDevice>(), 'test-surface')
+		appearance.bodyColor = 'not a colour'
+
+		expect(result?.surfaceAppearance).toEqual(validAppearance())
+	})
+
 	// The inverse of "rejects a surface whose layout does not match" in plugin.layout.spec.ts.
 	// Together the two are the required-vs-recommended contract expressed as tests.
 	it('still opens the surface when the appearance is malformed', async () => {

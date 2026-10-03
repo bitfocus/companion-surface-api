@@ -145,6 +145,15 @@ describe('PluginWrapper surface models', () => {
 		expect(wrapper.getSurfaceModels()).toEqual([])
 	})
 
+	it('drops a model which cannot be cloned, keeping the rest', async () => {
+		const { wrapper, plugin } = makeWrapper()
+		const unclonable = { ...validModel({ id: 'unclonable' }), extra: () => {} } as SurfaceModelDefinition
+		plugin.getSurfaceModels.mockResolvedValue([unclonable, validModel()])
+
+		await expect(wrapper.init()).resolves.toBeUndefined()
+		expect(wrapper.getSurfaceModels().map((m) => m.id)).toEqual(['streamdeck-xl'])
+	})
+
 	it('still initialises when getSurfaceModels throws', async () => {
 		const { wrapper, plugin } = makeWrapper()
 		plugin.getSurfaceModels.mockRejectedValue(new Error('no database'))

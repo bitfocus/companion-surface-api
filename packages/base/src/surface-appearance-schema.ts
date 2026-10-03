@@ -15,7 +15,8 @@ import z from 'zod'
 export const MAX_BODY_IMAGE_LENGTH = 512 * 1024
 
 /** Inline only - nothing downstream shares a filesystem with the module. */
-const BODY_IMAGE_REGEX = /^data:image\/(svg\+xml|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/
+const BODY_IMAGE_REGEX =
+	/^data:image\/(svg\+xml|png|webp);base64,(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)$/
 
 const appearanceSizeSchema = z
 	.object({

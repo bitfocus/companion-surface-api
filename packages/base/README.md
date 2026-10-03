@@ -13,7 +13,7 @@ yarn add @companion-surface/base
 Implement the `SurfacePlugin` interface to create a surface integration. Your plugin handles all surfaces of a given type.
 
 ```typescript
-import { SurfacePlugin, SurfaceContext } from '@companion-surface/base'
+import { SurfacePlugin, SurfaceContext, SurfaceModelDefinition } from '@companion-surface/base'
 
 export const MySurfacePlugin: SurfacePlugin = {
   async init(): Promise<void> {

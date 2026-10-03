@@ -165,19 +165,23 @@ export class PluginWrapper<TInfo = unknown> {
 				continue
 			}
 
+			let cloned: SurfaceModelDefinition
 			try {
 				validateSurfaceModelDefinition(model)
+
+				// Cloned so the plugin cannot change these out from under us by mutating what it handed back.
+				// Inside the try, as a model which validates can still fail to clone (eg a function valued property)
+				cloned = structuredClone(model)
 			} catch (e) {
 				this.#logger.warn(`Ignoring invalid surface model "${modelId}": ${e}`)
 				continue
 			}
 
-			seenIds.add(model.id)
-			valid.push(model)
+			seenIds.add(cloned.id)
+			valid.push(cloned)
 		}
 
-		// Cloned so the plugin cannot change these out from under us by mutating what it handed back
-		this.#surfaceModels = structuredClone(valid)
+		this.#surfaceModels = valid
 	}
 
 	async destroy(): Promise<void> {
@@ -321,9 +325,11 @@ export class PluginWrapper<TInfo = unknown> {
 		}
 
 		// Optional, unlike the layout: a bad one is dropped and the face derived instead, never failing the open
-		let surfaceAppearance: SurfaceAppearanceDefinition | null = surface.registerProps.surfaceAppearance ?? null
-		if (surfaceAppearance) {
+		let surfaceAppearance: SurfaceAppearanceDefinition | null = null
+		if (surface.registerProps.surfaceAppearance != null) {
 			try {
+				// Snapshot first, so the plugin mutating its object later cannot change what was validated
+				surfaceAppearance = structuredClone(surface.registerProps.surfaceAppearance)
 				validateSurfaceAppearance(surfaceAppearance)
 
 				// All or nothing, rather than mixing a declared face with derived geometry for the rest
