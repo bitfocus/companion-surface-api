@@ -335,6 +335,13 @@ export class PluginWrapper<TInfo = unknown> {
 			}
 		}
 
+		// Only worth reporting if it is a model the host has been told about, as it is only useful for finding that model
+		let modelId = surface.registerProps.modelId ?? null
+		if (modelId !== null && !this.#surfaceModels.some((model) => model.id === modelId)) {
+			this.#logger.warn(`Ignoring model id "${modelId}" for ${resolvedSurfaceId}: not one of the declared models`)
+			modelId = null
+		}
+
 		// Wrap the surface
 		const wrapped = new SurfaceProxy(this.#host, surfaceContext, surface.surface, surface.registerProps)
 		this.#openSurfaces.set(resolvedSurfaceId, wrapped)
@@ -349,6 +356,7 @@ export class PluginWrapper<TInfo = unknown> {
 			supportsBrightness: surface.registerProps.brightness,
 			surfaceLayout: surface.registerProps.surfaceLayout,
 			surfaceAppearance,
+			modelId,
 			transferVariables: surface.registerProps.transferVariables ?? null,
 			location: surface.registerProps.location ?? null,
 			isRemote,

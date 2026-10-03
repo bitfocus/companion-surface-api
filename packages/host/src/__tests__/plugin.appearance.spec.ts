@@ -43,6 +43,7 @@ function makeWrapper(surfaceAppearance: SurfaceAppearanceDefinition | null) {
 		brightness: false,
 		surfaceLayout: validLayout(),
 		surfaceAppearance,
+		modelId: null,
 		pincodeMap: null,
 		location: null,
 		configFields: null,

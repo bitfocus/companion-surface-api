@@ -66,6 +66,13 @@ export interface SurfaceRegisterProps {
 	 */
 	surfaceAppearance: SurfaceAppearanceDefinition | null
 	/**
+	 * Which of the models this plugin declares from `getSurfaceModels` this surface is, by that model's id. Lets
+	 * the host tell which model a connected surface is without matching their names, which a plugin is free to
+	 * word differently. Set to null if it is none of them.
+	 * Note: This is used for UI hinting, the appearance provided here by `surfaceAppearance` will be used regardless of the `modelId`.
+	 */
+	modelId: string | null
+	/**
 	 * Describes any custom input or output variables for the surface
 	 * These are typically used for reporting values such as a tbar or battery level.
 	 * Or for providing non-button values such as leds next to a tbar

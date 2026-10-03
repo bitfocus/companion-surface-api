@@ -50,6 +50,11 @@ export interface OpenDeviceResult {
 	 */
 	surfaceAppearance: SurfaceAppearanceDefinition | null
 	/**
+	 * Which of the plugin's declared models this surface is, by the model's id as the plugin declared it. Null when
+	 * the surface named none, or named one the plugin did not declare.
+	 */
+	modelId: string | null
+	/**
 	 * Describes any custom input or output variables for the surface
 	 * These are typically used for reporting values such as a tbar or battery level.
 	 * Or for providing non-button values such as leds next to a tbar

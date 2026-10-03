@@ -34,6 +34,7 @@ function makeProxy() {
 			},
 		},
 		surfaceAppearance: null,
+		modelId: null,
 		pincodeMap: null,
 		location: null,
 		configFields: null,
