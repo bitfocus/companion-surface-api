@@ -37,7 +37,7 @@ const controlShapeSchema = z
 					.optional()
 					.meta({ default: 0 })
 					.describe(
-						'Corner radius in face units. Omit or use `0` for square corners; a capsule (a touch strip segment, a fader track) is half the shorter side.',
+						'Corner radius in face units. Omit or use `0` for square corners; a capsule (a touch strip segment) is half the shorter side.',
 					),
 			})
 			.describe('A rectangle filling the control bounds, optionally with rounded corners.'),
@@ -56,12 +56,14 @@ const controlAppearanceSchema = z
 		height: z.number().positive().describe('Height of the control, in face units.'),
 		shape: controlShapeSchema
 			.optional()
-			.describe('How the control is drawn. Defaults to a square-cornered rectangle filling the bounds.'),
+			.describe(
+				'How the control is drawn. An `encoder` is always a circle, so this is ignored for one. Defaults to a circle for a `jog` or `shuttle`, and otherwise a square-cornered rectangle filling the bounds.',
+			),
 		type: z
-			.enum(['button', 'encoder', 'jog', 'fader', 'lcd-segment'])
+			.enum(['button', 'encoder', 'jog', 'shuttle', 'lcd-segment'])
 			.optional()
 			.describe(
-				'What kind of control this is, so it can be drawn as one - a knob rather than a round button, a fader rather than a tall key. Defaults to a button.',
+				'What kind of control this is, so it can be drawn as one - a knob rather than a round button. Defaults to a button.',
 			),
 		label: z
 			.string()

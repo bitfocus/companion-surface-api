@@ -130,7 +130,7 @@ describe('validateSurfaceAppearance', () => {
 
 	describe('kind and legend', () => {
 		it('accepts every control type', () => {
-			for (const type of ['button', 'encoder', 'jog', 'fader', 'lcd-segment'] as const) {
+			for (const type of ['button', 'encoder', 'jog', 'shuttle', 'lcd-segment'] as const) {
 				expect(() =>
 					validateSurfaceAppearance(
 						validAppearance({ controls: { '0/0': { x: 0, y: 0, width: 1, height: 1, type } } }),
