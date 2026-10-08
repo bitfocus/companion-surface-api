@@ -3,6 +3,8 @@ import { readFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import z from 'zod'
 import { buildManifestSchema } from '../manifest-schema.js'
+import { surfaceLayoutSchema } from '../surface-layout-schema.js'
+import { surfaceAppearanceSchema } from '../surface-appearance-schema.js'
 
 /** Recursively collect every value found at an `additionalProperties` key. */
 function collectAdditionalProperties(node: unknown, out: unknown[] = []): unknown[] {
@@ -22,28 +24,36 @@ function readAsset(relativePath: string): unknown {
 	return JSON.parse(readFileSync(fileURLToPath(url), 'utf8'))
 }
 
+/** Every schema `tools/generate-schemas.mjs` writes, and the source it writes it from. */
+const generatedAssets = [
+	// The published manifest schema is the strict one, as the generator emits it.
+	{ asset: 'manifest.schema.json', schema: buildManifestSchema(true) },
+	{ asset: 'surface-layout.schema.json', schema: surfaceLayoutSchema },
+	{ asset: 'surface-appearance.schema.json', schema: surfaceAppearanceSchema },
+]
+
 describe('generated schema assets', () => {
 	it('never emits `additionalProperties: false` (forward-compatibility)', () => {
-		for (const asset of ['manifest.schema.json', 'surface-layout.schema.json']) {
+		for (const { asset } of generatedAssets) {
 			const schema = readAsset(asset)
 			const additionalProps = collectAdditionalProperties(schema)
 			expect(additionalProps, `${asset} should not close any objects`).not.toContain(false)
 		}
 	})
 
-	it('committed assets match what the generator would produce', () => {
-		const manifestJson = z.toJSONSchema(buildManifestSchema(true), {
+	it.each(generatedAssets)('$asset matches what the generator would produce', ({ asset, schema }) => {
+		const generated = z.toJSONSchema(schema, {
 			target: 'draft-2020-12',
 			unrepresentable: 'any',
 			override: (ctx) => {
 				if (ctx.jsonSchema.additionalProperties === false) delete ctx.jsonSchema.additionalProperties
 			},
 		})
-		const committed = readAsset('manifest.schema.json') as Record<string, unknown>
+		const committed = readAsset(asset) as Record<string, unknown>
 		// `$id` is the only field the generator adds on top of zod's output.
 		const { $id, ...committedBody } = committed
 		void $id
-		expect(committedBody).toEqual(manifestJson)
+		expect(committedBody).toEqual(generated)
 	})
 })
 
