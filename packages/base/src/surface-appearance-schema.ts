@@ -11,7 +11,10 @@ import z from 'zod'
  * matter. An svg background must use a `viewBox` of `0 0 <size.width> <size.height>`.
  */
 
-/** Largest body image accepted, in characters of the data URI (~384KiB decoded). */
+/**
+ * Largest body image accepted, in characters of the data URI (~384KiB decoded). Generous for vector
+ * art, while keeping a detailed raster too small to be worth reaching for.
+ */
 export const MAX_BODY_IMAGE_LENGTH = 512 * 1024
 
 /** Inline only - nothing downstream shares a filesystem with the module. */
@@ -27,22 +30,22 @@ const appearanceSizeSchema = z
 	.meta({ id: 'SurfaceAppearanceSize', title: 'SurfaceAppearanceSize' })
 
 const controlShapeSchema = z
-	.discriminatedUnion('type', [
+	.discriminatedUnion('shape', [
 		z
 			.object({
-				type: z.literal('rect'),
+				shape: z.literal('rect'),
 				cornerRadius: z
 					.number()
 					.min(0)
 					.optional()
 					.meta({ default: 0 })
 					.describe(
-						'Corner radius in face units. Omit or use `0` for square corners; a capsule (a touch strip segment) is half the shorter side.',
+						'Corner radius in face units. Omit or use `0` for square corners, or half the shorter side for fully rounded ends, as on a touch strip segment.',
 					),
 			})
 			.describe('A rectangle filling the control bounds, optionally with rounded corners.'),
 		z
-			.object({ type: z.literal('circle') })
+			.object({ shape: z.literal('ellipse') })
 			.describe('An ellipse inscribed in the control bounds, which in square bounds is a circle.'),
 	])
 	.describe('How a control is drawn.')
@@ -57,9 +60,9 @@ const controlAppearanceSchema = z
 		shape: controlShapeSchema
 			.optional()
 			.describe(
-				'How the control is drawn. An `encoder` is always a circle, so this is ignored for one. Defaults to a circle for a `jog` or `shuttle`, and otherwise a square-cornered rectangle filling the bounds.',
+				'How the control is drawn. An `encoder` is always an ellipse, so this is ignored for one. Defaults to an ellipse for a `jog` or `shuttle`, and otherwise a square-cornered rectangle filling the bounds.',
 			),
-		type: z
+		kind: z
 			.enum(['button', 'encoder', 'jog', 'shuttle', 'lcd-segment'])
 			.optional()
 			.describe(
@@ -93,7 +96,7 @@ export const surfaceAppearanceSchema = z
 			.max(MAX_BODY_IMAGE_LENGTH, 'body image is too large; a face should be simple vector art, not a photograph')
 			.optional()
 			.describe(
-				'Artwork for the face, drawn over `bodyColor` and under the controls, as a base64 `data:` URI. SVG is preferred. An SVG must use a `viewBox` of `0 0 <size.width> <size.height>` so that the art and the control positions share one coordinate system; a raster is scaled to fill `size` exactly.',
+				'Artwork for the face, drawn over `bodyColor` and under the controls, as a base64 `data:` URI. SVG is preferred; a raster is accepted for simple cases, but the whole URI is limited to 512KiB. An SVG must use a `viewBox` of `0 0 <size.width> <size.height>` so that the art and the control positions share one coordinate system; a raster is scaled to fill `size` exactly.',
 			),
 		controls: z
 			.record(z.string().regex(/^[a-zA-Z0-9\-/]+$/), controlAppearanceSchema)

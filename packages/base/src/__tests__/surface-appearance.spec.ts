@@ -9,9 +9,9 @@ function validAppearance(overrides: Partial<SurfaceAppearanceDefinition> = {}): 
 		size: { width: 1560, height: 1220 },
 		bodyColor: '#1a1a1a',
 		controls: {
-			'0/0': { x: 120, y: 180, width: 180, height: 180, shape: { type: 'rect', cornerRadius: 20 } },
+			'0/0': { x: 120, y: 180, width: 180, height: 180, shape: { shape: 'rect', cornerRadius: 20 } },
 			'0/1': { x: 340, y: 180, width: 180, height: 180 },
-			'1/0': { x: 120, y: 400, width: 180, height: 180, shape: { type: 'circle' } },
+			'1/0': { x: 120, y: 400, width: 180, height: 180, shape: { shape: 'ellipse' } },
 		},
 		...overrides,
 	}
@@ -94,24 +94,24 @@ describe('validateSurfaceAppearance', () => {
 		it('accepts a rect with no corner radius', () => {
 			expect(() =>
 				validateSurfaceAppearance(
-					validAppearance({ controls: { '0/0': { x: 0, y: 0, width: 1, height: 1, shape: { type: 'rect' } } } }),
+					validAppearance({ controls: { '0/0': { x: 0, y: 0, width: 1, height: 1, shape: { shape: 'rect' } } } }),
 				),
 			).not.toThrow()
 		})
 
-		it('accepts a circle', () => {
+		it('accepts an ellipse', () => {
 			expect(() =>
 				validateSurfaceAppearance(
-					validAppearance({ controls: { '0/0': { x: 0, y: 0, width: 1, height: 1, shape: { type: 'circle' } } } }),
+					validAppearance({ controls: { '0/0': { x: 0, y: 0, width: 1, height: 1, shape: { shape: 'ellipse' } } } }),
 				),
 			).not.toThrow()
 		})
 
-		it('throws on an unrecognised shape type', () => {
+		it('throws on an unrecognised shape', () => {
 			expect(() =>
 				validateSurfaceAppearance(
 					validAppearance({
-						controls: { '0/0': { x: 0, y: 0, width: 1, height: 1, shape: { type: 'hexagon' } as any } },
+						controls: { '0/0': { x: 0, y: 0, width: 1, height: 1, shape: { shape: 'hexagon' } as any } },
 					}),
 				),
 			).toThrow('Surface appearance validation failed')
@@ -121,7 +121,7 @@ describe('validateSurfaceAppearance', () => {
 			expect(() =>
 				validateSurfaceAppearance(
 					validAppearance({
-						controls: { '0/0': { x: 0, y: 0, width: 1, height: 1, shape: { type: 'rect', cornerRadius: -1 } } },
+						controls: { '0/0': { x: 0, y: 0, width: 1, height: 1, shape: { shape: 'rect', cornerRadius: -1 } } },
 					}),
 				),
 			).toThrow('Surface appearance validation failed')
@@ -129,20 +129,20 @@ describe('validateSurfaceAppearance', () => {
 	})
 
 	describe('kind and legend', () => {
-		it('accepts every control type', () => {
-			for (const type of ['button', 'encoder', 'jog', 'shuttle', 'lcd-segment'] as const) {
+		it('accepts every control kind', () => {
+			for (const kind of ['button', 'encoder', 'jog', 'shuttle', 'lcd-segment'] as const) {
 				expect(() =>
 					validateSurfaceAppearance(
-						validAppearance({ controls: { '0/0': { x: 0, y: 0, width: 1, height: 1, type } } }),
+						validAppearance({ controls: { '0/0': { x: 0, y: 0, width: 1, height: 1, kind } } }),
 					),
 				).not.toThrow()
 			}
 		})
 
-		it('throws on an unrecognised control type', () => {
+		it('throws on an unrecognised control kind', () => {
 			expect(() =>
 				validateSurfaceAppearance(
-					validAppearance({ controls: { '0/0': { x: 0, y: 0, width: 1, height: 1, type: 'trackball' as any } } }),
+					validAppearance({ controls: { '0/0': { x: 0, y: 0, width: 1, height: 1, kind: 'trackball' as any } } }),
 				),
 			).toThrow('Surface appearance validation failed')
 		})

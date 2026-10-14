@@ -28,7 +28,7 @@ function validAppearance(): SurfaceAppearanceDefinition {
 		size: { width: 500, height: 250 },
 		bodyColor: '#1a1a1a',
 		controls: {
-			'0/0': { x: 50, y: 50, width: 150, height: 150, shape: { type: 'rect', cornerRadius: 18 } },
+			'0/0': { x: 50, y: 50, width: 150, height: 150, shape: { shape: 'rect', cornerRadius: 18 } },
 			'0/1': { x: 250, y: 50, width: 150, height: 150 },
 		},
 	}

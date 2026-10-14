@@ -11,7 +11,7 @@
 			"description": "The colour of the device itself, as `#rrggbb` - the colour of the plastic, not a colour chosen to suit a theme. With no `bodyImage` it fills the face; with one it says what the device looks like, so the face can be told apart from whatever is behind it."
 		},
 		"bodyImage": {
-			"description": "Artwork for the face, drawn over `bodyColor` and under the controls, as a base64 `data:` URI. SVG is preferred. An SVG must use a `viewBox` of `0 0 <size.width> <size.height>` so that the art and the control positions share one coordinate system; a raster is scaled to fill `size` exactly.",
+			"description": "Artwork for the face, drawn over `bodyColor` and under the controls, as a base64 `data:` URI. SVG is preferred; a raster is accepted for simple cases, but the whole URI is limited to 512KiB. An SVG must use a `viewBox` of `0 0 <size.width> <size.height>` so that the art and the control positions share one coordinate system; a raster is scaled to fill `size` exactly.",
 			"type": "string",
 			"maxLength": 524288,
 			"pattern": "^data:image\\/(svg\\+xml|png|webp);base64,(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)$"
@@ -50,10 +50,10 @@
 				"width": { "type": "number", "exclusiveMinimum": 0, "description": "Width of the control, in face units." },
 				"height": { "type": "number", "exclusiveMinimum": 0, "description": "Height of the control, in face units." },
 				"shape": {
-					"description": "How the control is drawn. An `encoder` is always a circle, so this is ignored for one. Defaults to a circle for a `jog` or `shuttle`, and otherwise a square-cornered rectangle filling the bounds.",
+					"description": "How the control is drawn. An `encoder` is always an ellipse, so this is ignored for one. Defaults to an ellipse for a `jog` or `shuttle`, and otherwise a square-cornered rectangle filling the bounds.",
 					"$ref": "#/$defs/SurfaceControlShape"
 				},
-				"type": {
+				"kind": {
 					"description": "What kind of control this is, so it can be drawn as one - a knob rather than a round button. Defaults to a button.",
 					"type": "string",
 					"enum": ["button", "encoder", "jog", "shuttle", "lcd-segment"]
@@ -73,21 +73,21 @@
 				{
 					"type": "object",
 					"properties": {
-						"type": { "type": "string", "const": "rect" },
+						"shape": { "type": "string", "const": "rect" },
 						"cornerRadius": {
 							"default": 0,
-							"description": "Corner radius in face units. Omit or use `0` for square corners; a capsule (a touch strip segment) is half the shorter side.",
+							"description": "Corner radius in face units. Omit or use `0` for square corners, or half the shorter side for fully rounded ends, as on a touch strip segment.",
 							"type": "number",
 							"minimum": 0
 						}
 					},
-					"required": ["type"],
+					"required": ["shape"],
 					"description": "A rectangle filling the control bounds, optionally with rounded corners."
 				},
 				{
 					"type": "object",
-					"properties": { "type": { "type": "string", "const": "circle" } },
-					"required": ["type"],
+					"properties": { "shape": { "type": "string", "const": "ellipse" } },
+					"required": ["shape"],
 					"description": "An ellipse inscribed in the control bounds, which in square bounds is a circle."
 				}
 			],
