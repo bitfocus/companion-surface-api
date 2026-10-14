@@ -32,6 +32,8 @@ function makeWrapper(surfaceLayout: SurfaceSchemaLayoutDefinition) {
 		pincodeMap: null,
 		location: null,
 		configFields: null,
+		surfaceAppearance: null,
+		modelId: null,
 	}
 
 	const plugin = mock<SurfacePlugin<unknown>>()
