@@ -53,6 +53,9 @@ jobs:
           yarn build
         env:
           CI: true
+      - name: Check generated schemas are committed
+        run: |
+          git diff --exit-code -- packages/base/assets || (echo "::error::Generated schemas are out of date; run 'yarn build:schema' and commit the result" && exit 1)
       - name: Run tests
         run: |
           yarn unit
