@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.4.2...companion-surface-host-v1.5.0) (2026-10-15)
+
+
+### Features
+
+* let surfaces describe their face, and plugins declare their models ([#89](https://github.com/bitfocus/companion-surface-api/issues/89)) ([0afe929](https://github.com/bitfocus/companion-surface-api/commit/0afe929668d2ee9ed09aac70014ef6093983adb2))
+
 ## [1.4.2](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-host-v1.4.1...companion-surface-host-v1.4.2) (2026-10-03)
 
 
