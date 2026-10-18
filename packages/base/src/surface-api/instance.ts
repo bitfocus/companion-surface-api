@@ -1,6 +1,6 @@
 import type { CardGenerator } from './cards.js'
 import type { SurfaceFirmwareUpdateCache, SurfaceFirmwareUpdateInfo } from './firmware.js'
-import type { SurfaceDrawProps, SurfaceId } from './types.js'
+import type { ControlId, SurfaceControlEvent, SurfaceDrawProps, SurfaceId } from './types.js'
 
 export interface SurfaceInstance {
 	/**
@@ -37,12 +37,15 @@ export interface SurfaceInstance {
 	ready(): Promise<void>
 
 	/**
-	 * Request the surface's short, implementation-defined haptic feedback effect.
+	 * Show that Companion acted on physical input to a control, for example with a haptic click or a flash of the key.
+	 * Only called when the surface registered `controlEvents: true`.
 	 *
-	 * This is a best-effort submission only. Resolving does not confirm that the
-	 * effect was felt, and implementations must not rely on a host timeout or ACK.
+	 * How to show it is up to the surface, and a surface that can only signal for the whole device may ignore the controlId.
+	 * This is best-effort: the host does not wait for or retry it, and resolving does not confirm the user noticed.
+	 * @param controlId The control the input came from
+	 * @param event What happened. Ignore any event that isn't recognised, as more may be added later
 	 */
-	triggerHapticFeedback?(): Promise<void>
+	controlEvent?(controlId: ControlId, event: SurfaceControlEvent): Promise<void>
 
 	// updateCapabilities(capabilities: ClientCapabilities): void
 

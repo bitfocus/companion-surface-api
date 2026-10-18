@@ -39,12 +39,12 @@ export interface OpenDeviceResult {
 	 */
 	supportsBrightness: boolean
 	/**
-	 * A per-open connection generation for best-effort haptic feedback.
+	 * Present when the surface wants control events. When absent, don't send any.
 	 *
-	 * When absent, haptic feedback is unsupported. Pass connectionId back to
-	 * PluginWrapper.triggerHapticFeedback; it is invalidated when this surface closes.
+	 * Pass connectionId back to PluginWrapper.controlEvent. It is new on every open and
+	 * invalidated on close, so a delayed event can't reach a later surface with the same id.
 	 */
-	hapticFeedback?: {
+	controlEvents?: {
 		connectionId: string
 	}
 	/**

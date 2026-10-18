@@ -5,6 +5,8 @@ import {
 	type RemoteSurfaceConnectionInfo,
 	type HIDDevice,
 	type OpenSurfaceResult,
+	type ControlId,
+	type SurfaceControlEvent,
 	type SurfaceDrawProps,
 	type SurfacePlugin,
 	DetectionSurfaceInfo,
@@ -250,21 +252,21 @@ export class PluginWrapper<TInfo = unknown> {
 			throw e
 		}
 
-		const hapticFeedbackSupported =
-			surface.registerProps.hapticFeedback === true && typeof surface.surface.triggerHapticFeedback === 'function'
-		if (surface.registerProps.hapticFeedback === true && !hapticFeedbackSupported) {
-			this.#logger.warn(`Surface ${resolvedSurfaceId} registered haptic feedback without an implementation`)
+		const controlEventsSupported =
+			surface.registerProps.controlEvents === true && typeof surface.surface.controlEvent === 'function'
+		if (surface.registerProps.controlEvents === true && !controlEventsSupported) {
+			this.#logger.warn(`Surface ${resolvedSurfaceId} registered control events without implementing controlEvent`)
 		}
 
-		// The connection generation is deliberately per open, so a delayed request
-		// cannot target a later instance with the same surface id.
-		const hapticFeedbackConnectionId = hapticFeedbackSupported ? randomUUID() : undefined
+		// The connection id is deliberately per open, so a delayed event
+		// cannot reach a later instance with the same surface id.
+		const controlEventsConnectionId = controlEventsSupported ? randomUUID() : undefined
 		const wrapped = new SurfaceProxy(
 			this.#host,
 			surfaceContext,
 			surface.surface,
 			surface.registerProps,
-			hapticFeedbackConnectionId,
+			controlEventsConnectionId,
 		)
 		this.#openSurfaces.set(resolvedSurfaceId, wrapped)
 
@@ -276,7 +278,7 @@ export class PluginWrapper<TInfo = unknown> {
 			surfaceId: resolvedSurfaceId,
 			description: description,
 			supportsBrightness: surface.registerProps.brightness,
-			hapticFeedback: hapticFeedbackConnectionId ? { connectionId: hapticFeedbackConnectionId } : undefined,
+			controlEvents: controlEventsConnectionId ? { connectionId: controlEventsConnectionId } : undefined,
 			surfaceLayout: surface.registerProps.surfaceLayout,
 			transferVariables: surface.registerProps.transferVariables ?? null,
 			location: surface.registerProps.location ?? null,
@@ -357,16 +359,21 @@ export class PluginWrapper<TInfo = unknown> {
 	}
 
 	/**
-	 * Submit one best-effort haptic request to the matching ready surface.
+	 * Tell a ready surface about an event on one of its controls.
 	 *
-	 * A stale, closed, unsupported, or not-ready connection is intentionally a
-	 * no-op. Promise resolution never acknowledges physical feedback.
+	 * A stale, closed, unsupported or not-ready connection, or an unknown control, is a no-op.
+	 * Resolving does not mean the surface showed anything.
 	 */
-	async triggerHapticFeedback(surfaceId: string, connectionId: string): Promise<void> {
+	async controlEvent(
+		surfaceId: string,
+		connectionId: string,
+		controlId: ControlId,
+		event: SurfaceControlEvent,
+	): Promise<void> {
 		const surface = this.#openSurfaces.get(surfaceId)
-		if (!surface || surface.hapticFeedbackConnectionId !== connectionId) return
+		if (!surface || surface.controlEventsConnectionId !== connectionId) return
 
-		await surface.triggerHapticFeedback(connectionId)
+		await surface.controlEvent(connectionId, controlId, event)
 	}
 
 	async setBrightness(surfaceId: string, brightness: number): Promise<void> {

@@ -2,6 +2,7 @@ import {
 	type HostCapabilities,
 	type ControlId,
 	type SurfaceContext,
+	type SurfaceControlEvent,
 	type SurfaceDrawProps,
 	type SurfaceId,
 	type SurfaceInstance,
@@ -34,7 +35,7 @@ export class SurfaceProxy {
 	readonly #registerProps: SurfaceRegisterProps
 
 	readonly #drawQueue: DrawingState
-	#hapticFeedbackConnectionId: string | undefined
+	#controlEventsConnectionId: string | undefined
 	#isReady = false
 
 	#pincodeCharacterCount = 0
@@ -50,8 +51,8 @@ export class SurfaceProxy {
 	get registerProps(): SurfaceRegisterProps {
 		return this.#registerProps
 	}
-	get hapticFeedbackConnectionId(): string | undefined {
-		return this.#hapticFeedbackConnectionId
+	get controlEventsConnectionId(): string | undefined {
+		return this.#controlEventsConnectionId
 	}
 
 	constructor(
@@ -59,14 +60,14 @@ export class SurfaceProxy {
 		context: SurfaceProxyContext,
 		surface: SurfaceInstance,
 		registerProps: SurfaceRegisterProps,
-		hapticFeedbackConnectionId?: string,
+		controlEventsConnectionId?: string,
 	) {
 		this.#logger = createModuleLogger(`SurfaceProxy/${surface.surfaceId}`)
 		this.#host = host
 		this.#context = context
 		this.#surface = surface
 		this.#registerProps = registerProps
-		this.#hapticFeedbackConnectionId = hapticFeedbackConnectionId
+		this.#controlEventsConnectionId = controlEventsConnectionId
 
 		this.#drawQueue = new DrawingState(this.surfaceId, 'preinit')
 
@@ -75,7 +76,7 @@ export class SurfaceProxy {
 	}
 
 	async close(): Promise<void> {
-		this.#hapticFeedbackConnectionId = undefined
+		this.#controlEventsConnectionId = undefined
 		this.#isReady = false
 		this.#drawQueue.abortQueued('closed')
 
@@ -114,27 +115,32 @@ export class SurfaceProxy {
 	}
 
 	/**
-	 * Submit a one-shot haptic request for the matching open connection.
+	 * Pass an event for one control to the surface, for the matching open connection.
 	 *
-	 * This intentionally does not use the draw queue. It resolves after the
-	 * request has been submitted or dropped; it is not a physical-delivery ACK.
-	 * Requests during initialization/reinitialization are dropped, including when
-	 * configuration or readiness failed. They are never saved for later playback.
+	 * This deliberately bypasses the draw queue, and resolves once the surface has taken
+	 * the event or it was dropped. Events while the surface is initialising, reinitialising
+	 * or locked, and events for unknown controls, are dropped and never replayed.
 	 */
-	async triggerHapticFeedback(connectionId: string): Promise<void> {
+	async controlEvent(connectionId: string, controlId: ControlId, event: SurfaceControlEvent): Promise<void> {
 		if (
-			this.#hapticFeedbackConnectionId !== connectionId ||
+			this.#controlEventsConnectionId !== connectionId ||
 			!this.#isReady ||
-			this.#registerProps.hapticFeedback !== true ||
-			!this.#surface.triggerHapticFeedback
+			this.#context.isLocked ||
+			this.#registerProps.controlEvents !== true ||
+			!this.#surface.controlEvent
 		) {
 			return
 		}
 
+		if (BANNED_PROPS.has(controlId) || !this.#registerProps.surfaceLayout.controls[controlId]) {
+			this.#logger.warn(`Dropping control event for unknown controlId: ${controlId}`)
+			return
+		}
+
 		try {
-			await this.#surface.triggerHapticFeedback()
+			await this.#surface.controlEvent(controlId, event)
 		} catch (e) {
-			this.#logger.warn(`Haptic feedback failed: ${e}`)
+			this.#logger.warn(`Control event failed: ${e}`)
 		}
 	}
 

@@ -28,6 +28,15 @@ export type SurfaceId = string
 export type ControlId = string
 
 /**
+ * Something Companion did in response to physical input on a control, which a surface may choose to show.
+ * - `press`: a press of the control ran an action group, either on press or on release
+ * - `hold`: an action group set to run while the control is held has fired, while it is still held
+ *
+ * More events may be added in future, so surfaces should ignore any they don't recognise.
+ */
+export type SurfaceControlEvent = 'press' | 'hold'
+
+/**
  * Definition of a varaible produced by a surface
  */
 export interface SurfaceInputVariable {
@@ -55,12 +64,11 @@ export interface SurfaceRegisterProps {
 	 */
 	brightness: boolean
 	/**
-	 * Whether this opened surface supports short, implementation-defined haptic feedback.
+	 * Whether this opened surface wants to be told about control events, such as a press running actions.
 	 *
-	 * Omit this for unsupported surfaces. When set, the SurfaceInstance must also
-	 * implement triggerHapticFeedback.
+	 * Omit this if the surface can't show them. When set, the SurfaceInstance must also implement controlEvent.
 	 */
-	hapticFeedback?: boolean
+	controlEvents?: boolean
 	/**
 	 * The definition of the controls on the surface and the properties needed for drawing
 	 */
