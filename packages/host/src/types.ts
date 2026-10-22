@@ -40,6 +40,15 @@ export interface OpenDeviceResult {
 	 */
 	supportsBrightness: boolean
 	/**
+	 * Present when the surface wants control events. When absent, don't send any.
+	 *
+	 * Pass connectionId back to PluginWrapper.controlEvent. It is new on every open and
+	 * invalidated on close, so a delayed event can't reach a later surface with the same id.
+	 */
+	controlEvents?: {
+		connectionId: string
+	}
+	/**
 	 * The definition of the controls on the surface and the properties needed for drawing
 	 */
 	surfaceLayout: SurfaceSchemaLayoutDefinition

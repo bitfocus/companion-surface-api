@@ -33,6 +33,7 @@ export {
 	SurfaceFirmwareUpdateInfo,
 	HIDDevice,
 	SurfaceDrawProps,
+	SurfaceControlEvent,
 	HostCapabilities,
 	GridSize,
 	SurfaceInputVariable,
