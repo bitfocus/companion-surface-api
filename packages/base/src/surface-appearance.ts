@@ -10,7 +10,7 @@ import { formatValidationError } from './schema-error.js'
 
 export type { SurfaceAppearanceDefinition, SurfaceAppearanceSize, SurfaceControlAppearance, SurfaceControlShape }
 
-export { MAX_BODY_IMAGE_LENGTH } from './surface-appearance-schema.js'
+export { MAX_BODY_IMAGE_LENGTH, surfaceAppearanceSchema } from './surface-appearance-schema.js'
 
 /**
  * Validate a surface appearance. Unlike a layout an appearance is optional, so a caller which gets

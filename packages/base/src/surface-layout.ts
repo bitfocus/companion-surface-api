@@ -17,6 +17,7 @@ export type {
 	SurfaceSchemaLedsConfig,
 	SurfaceSchemaPixelFormat,
 }
+export { surfaceLayoutSchema }
 
 /**
  * Validate that a surface layout matches the schema before it is handed off to
