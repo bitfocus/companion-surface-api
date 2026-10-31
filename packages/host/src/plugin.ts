@@ -1,9 +1,12 @@
 import { SurfaceProxy, SurfaceProxyContext } from './surfaceProxy.js'
+import { randomUUID } from 'node:crypto'
 import {
 	createModuleLogger,
 	type RemoteSurfaceConnectionInfo,
 	type HIDDevice,
 	type OpenSurfaceResult,
+	type ControlId,
+	type SurfaceControlEvent,
 	type SurfaceDrawProps,
 	type SurfacePlugin,
 	DetectionSurfaceInfo,
@@ -348,8 +351,22 @@ export class PluginWrapper<TInfo = unknown> {
 			modelId = null
 		}
 
-		// Wrap the surface
-		const wrapped = new SurfaceProxy(this.#host, surfaceContext, surface.surface, surface.registerProps)
+		const controlEventsSupported =
+			surface.registerProps.controlEvents === true && typeof surface.surface.controlEvent === 'function'
+		if (surface.registerProps.controlEvents === true && !controlEventsSupported) {
+			this.#logger.warn(`Surface ${resolvedSurfaceId} registered control events without implementing controlEvent`)
+		}
+
+		// The connection id is deliberately per open, so a delayed event
+		// cannot reach a later instance with the same surface id.
+		const controlEventsConnectionId = controlEventsSupported ? randomUUID() : undefined
+		const wrapped = new SurfaceProxy(
+			this.#host,
+			surfaceContext,
+			surface.surface,
+			surface.registerProps,
+			controlEventsConnectionId,
+		)
 		this.#openSurfaces.set(resolvedSurfaceId, wrapped)
 
 		// Trigger a firmware update check
@@ -360,6 +377,7 @@ export class PluginWrapper<TInfo = unknown> {
 			surfaceId: resolvedSurfaceId,
 			description: description,
 			supportsBrightness: surface.registerProps.brightness,
+			controlEvents: controlEventsConnectionId ? { connectionId: controlEventsConnectionId } : undefined,
 			surfaceLayout: surface.registerProps.surfaceLayout,
 			surfaceAppearance,
 			modelId,
@@ -445,6 +463,24 @@ export class PluginWrapper<TInfo = unknown> {
 
 	async closeDevice(surfaceId: string): Promise<void> {
 		this.#cleanupSurfaceById(surfaceId)
+	}
+
+	/**
+	 * Tell a ready surface about an event on one of its controls.
+	 *
+	 * A stale, closed, unsupported or not-ready connection, or an unknown control, is a no-op.
+	 * Resolving does not mean the surface showed anything.
+	 */
+	async controlEvent(
+		surfaceId: string,
+		connectionId: string,
+		controlId: ControlId,
+		event: SurfaceControlEvent,
+	): Promise<void> {
+		const surface = this.#openSurfaces.get(surfaceId)
+		if (!surface || surface.controlEventsConnectionId !== connectionId) return
+
+		await surface.controlEvent(connectionId, controlId, event)
 	}
 
 	async setBrightness(surfaceId: string, brightness: number): Promise<void> {
