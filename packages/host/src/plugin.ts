@@ -13,6 +13,8 @@ import {
 	validateSurfaceModelDefinition,
 	type SurfaceModelDefinition,
 	type SurfaceAppearanceDefinition,
+	type JsonValue,
+	type JsonObject,
 } from '@companion-surface/base'
 import type { SurfaceHostContext } from './context.js'
 import type { PluginFeatures, CheckDeviceResult, OpenDeviceResult, SurfaceRotation } from './types.js'
@@ -464,14 +466,14 @@ export class PluginWrapper<TInfo = unknown> {
 		surface.blankSurface()
 	}
 
-	async updateConfig(surfaceId: string, config: Record<string, any>): Promise<void> {
+	async updateConfig(surfaceId: string, config: JsonObject): Promise<void> {
 		const surface = this.#openSurfaces.get(surfaceId)
 		if (!surface) throw new Error(`Surface with id ${surfaceId} is not opened`)
 
 		await surface.updateConfig(config)
 	}
 
-	async readySurface(surfaceId: string, config: Record<string, any>): Promise<void> {
+	async readySurface(surfaceId: string, config: JsonObject): Promise<void> {
 		const surface = this.#openSurfaces.get(surfaceId)
 		if (!surface) throw new Error(`Surface with id ${surfaceId} is not opened`)
 
@@ -493,8 +495,7 @@ export class PluginWrapper<TInfo = unknown> {
 		}
 	}
 
-	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-	async onVariableValue(surfaceId: string, name: string, value: any): Promise<void> {
+	async onVariableValue(surfaceId: string, name: string, value: JsonValue): Promise<void> {
 		const surface = this.#openSurfaces.get(surfaceId)
 		if (!surface) throw new Error(`Surface with id ${surfaceId} is not opened`)
 

@@ -1,4 +1,9 @@
-import type { DiscoveredRemoteSurfaceInfo, HostCapabilities, SurfaceFirmwareUpdateInfo } from '@companion-surface/base'
+import type {
+	DiscoveredRemoteSurfaceInfo,
+	HostCapabilities,
+	SurfaceFirmwareUpdateInfo,
+	JsonValue,
+} from '@companion-surface/base'
 import type { LockingGraphicsGenerator, HostCardGenerator } from './graphics.js'
 import type { CheckDeviceResult, OpenDeviceResult } from './types.js'
 
@@ -48,7 +53,7 @@ export interface HostSurfaceEvents {
 
 	readonly changePage: (surfaceId: string, forward: boolean) => void
 
-	readonly setVariableValue: (surfaceId: string, name: string, value: any) => void
+	readonly setVariableValue: (surfaceId: string, name: string, value: JsonValue) => void
 
 	readonly pincodeEntry: (surfaceId: string, char: number) => void
 

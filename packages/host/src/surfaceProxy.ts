@@ -15,6 +15,8 @@ import {
 	createModuleLogger,
 	SurfaceFirmwareUpdateInfo,
 	SurfaceFirmwareUpdateCache,
+	type JsonValue,
+	type JsonObject,
 } from '@companion-surface/base'
 import { DrawingState } from './internal/drawingState.js'
 import { SurfaceHostContext } from './context.js'
@@ -84,7 +86,7 @@ export class SurfaceProxy {
 		this.showStatus(displayHost, status)
 	}
 
-	async updateConfig(config: Record<string, any>): Promise<void> {
+	async updateConfig(config: JsonObject): Promise<void> {
 		if (this.#surface.updateConfig) {
 			await this.#surface.updateConfig(config)
 		} else {
@@ -92,7 +94,7 @@ export class SurfaceProxy {
 		}
 	}
 
-	async readySurface(config: Record<string, any>): Promise<void> {
+	async readySurface(config: JsonObject): Promise<void> {
 		this.#drawQueue.abortQueued('reinit')
 
 		if (this.#surface.updateConfig) {
@@ -153,8 +155,7 @@ export class SurfaceProxy {
 		})
 	}
 
-	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-	onVariableValue(name: string, value: any): void {
+	onVariableValue(name: string, value: JsonValue): void {
 		if (BANNED_PROPS.has(name)) {
 			this.#logger.warn(`Variable name "${name}" is a reserved word`)
 			return
@@ -497,8 +498,7 @@ export class SurfaceProxyContext implements SurfaceContext {
 		this.#host.surfaceEvents.changePage(this.#surfaceId, forward)
 	}
 
-	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-	sendVariableValue(variable: string, value: any): void {
+	sendVariableValue(variable: string, value: JsonValue): void {
 		if (this.#isLocked) return
 
 		if (BANNED_PROPS.has(variable)) {

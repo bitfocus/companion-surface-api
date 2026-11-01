@@ -1,3 +1,5 @@
+import type { JsonValue } from '../common/json-value.js'
+
 export interface HostCapabilities {
 	/**
 	 * Indicates whether the host supports non-square buttons.
@@ -81,5 +83,5 @@ export interface SurfaceContext {
 	 * @param variable Name of the variable
 	 * @param value Value of the variable
 	 */
-	sendVariableValue(variable: string, value: any): void
+	sendVariableValue(variable: string, value: JsonValue): void
 }

@@ -1,3 +1,4 @@
+export * from './common/json-value.js'
 export * from './logging.js'
 export * from './manifest.js'
 export * from './surface-api/index.js'

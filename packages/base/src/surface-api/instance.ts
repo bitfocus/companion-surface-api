@@ -1,3 +1,4 @@
+import type { JsonObject, JsonValue } from '../common/json-value.js'
 import type { CardGenerator } from './cards.js'
 import type { SurfaceFirmwareUpdateCache, SurfaceFirmwareUpdateInfo } from './firmware.js'
 import type { SurfaceDrawProps, SurfaceId } from './types.js'
@@ -28,7 +29,7 @@ export interface SurfaceInstance {
 	 * If there are any config fields defined, when the user updates the config, this is called to inform the surface of the new config
 	 * This will be called just before ready() with the initial config
 	 */
-	updateConfig?(config: Record<string, any>): Promise<void>
+	updateConfig?(config: JsonObject): Promise<void>
 
 	/**
 	 * When the surface transitions into the ready state
@@ -61,7 +62,7 @@ export interface SurfaceInstance {
 	 * @param name Name of the variable
 	 * @param value New value of the variable
 	 */
-	onVariableValue?(name: string, value: any): void
+	onVariableValue?(name: string, value: JsonValue): void
 
 	/**
 	 * Show the locked status of the surface for pincode entry
