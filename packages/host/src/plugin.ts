@@ -138,6 +138,9 @@ export class PluginWrapper<TInfo = unknown> {
 	 * validate, or a plugin which throws when asked, must still leave the plugin initialised.
 	 */
 	async #loadSurfaceModels(): Promise<void> {
+		// A plugin built against an older @companion-surface/base has none to report
+		if (typeof this.#plugin.getSurfaceModels !== 'function') return
+
 		let models: SurfaceModelDefinition[]
 		try {
 			models = await this.#plugin.getSurfaceModels({ capabilities: this.#host.capabilities })

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { mock } from 'vitest-mock-extended'
 import { PluginWrapper } from '../plugin.js'
 import type { SurfaceHostContext } from '../context.js'
@@ -160,6 +160,22 @@ describe('PluginWrapper surface models', () => {
 
 		await expect(wrapper.init()).resolves.toBeUndefined()
 		expect(wrapper.getSurfaceModels()).toEqual([])
+	})
+
+	it('quietly has no models when the plugin predates getSurfaceModels', async () => {
+		const { wrapper, plugin } = makeWrapper()
+		;(plugin as any).getSurfaceModels = undefined
+
+		const sink = vi.fn()
+		global.SURFACE_LOGGER = sink
+		try {
+			await expect(wrapper.init()).resolves.toBeUndefined()
+		} finally {
+			global.SURFACE_LOGGER = undefined
+		}
+
+		expect(wrapper.getSurfaceModels()).toEqual([])
+		expect(sink).not.toHaveBeenCalledWith('PluginWrapper', 'warn', expect.anything())
 	})
 
 	it('keeps its own copy, so a plugin mutating what it returned changes nothing', async () => {
