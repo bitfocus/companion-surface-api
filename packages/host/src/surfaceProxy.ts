@@ -62,7 +62,7 @@ export class SurfaceProxy {
 		context: SurfaceProxyContext,
 		surface: SurfaceInstance,
 		registerProps: SurfaceRegisterProps,
-		controlEventsConnectionId?: string,
+		controlEventsConnectionId: string | undefined,
 	) {
 		this.#logger = createModuleLogger(`SurfaceProxy/${surface.surfaceId}`)
 		this.#host = host
@@ -128,7 +128,7 @@ export class SurfaceProxy {
 			this.#controlEventsConnectionId !== connectionId ||
 			!this.#isReady ||
 			this.#context.isLocked ||
-			this.#registerProps.controlEvents !== true ||
+			!this.#registerProps.controlEvents?.includes(event) ||
 			!this.#surface.controlEvent
 		) {
 			return

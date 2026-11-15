@@ -39,7 +39,7 @@ export interface SurfaceInstance {
 
 	/**
 	 * Show that Companion acted on physical input to a control, for example with a haptic click or a flash of the key.
-	 * Only called when the surface registered `controlEvents: true`.
+	 * Only called for events listed in the `controlEvents` the surface registered.
 	 *
 	 * How to show it is up to the surface, and a surface that can only signal for the whole device may ignore the controlId.
 	 * This is best-effort: the host does not wait for or retry it, and resolving does not confirm the user noticed.

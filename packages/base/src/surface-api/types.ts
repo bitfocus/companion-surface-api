@@ -65,11 +65,12 @@ export interface SurfaceRegisterProps {
 	 */
 	brightness: boolean
 	/**
-	 * Whether this opened surface wants to be told about control events, such as a press running actions.
+	 * The control events this opened surface can show, such as a press running actions.
+	 * Only events in this list are sent to the surface.
 	 *
-	 * Omit this if the surface can't show them. When set, the SurfaceInstance must also implement controlEvent.
+	 * Omitted or empty means none. When non-empty, the SurfaceInstance must also implement controlEvent.
 	 */
-	controlEvents?: boolean
+	controlEvents?: SurfaceControlEvent[]
 	/**
 	 * The definition of the controls on the surface and the properties needed for drawing
 	 */

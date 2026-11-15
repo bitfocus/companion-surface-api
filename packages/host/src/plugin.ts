@@ -356,9 +356,9 @@ export class PluginWrapper<TInfo = unknown> {
 			modelId = null
 		}
 
-		const controlEventsSupported =
-			surface.registerProps.controlEvents === true && typeof surface.surface.controlEvent === 'function'
-		if (surface.registerProps.controlEvents === true && !controlEventsSupported) {
+		const wantsControlEvents = (surface.registerProps.controlEvents?.length ?? 0) > 0
+		const controlEventsSupported = wantsControlEvents && typeof surface.surface.controlEvent === 'function'
+		if (wantsControlEvents && !controlEventsSupported) {
 			this.#logger.warn(`Surface ${resolvedSurfaceId} registered control events without implementing controlEvent`)
 		}
 

@@ -32,7 +32,7 @@ function makeSurface(controlEvent?: ControlEventFn): SurfaceInstance {
 	return surface
 }
 
-function registerProps(controlEvents?: boolean): SurfaceRegisterProps {
+function registerProps(controlEvents?: SurfaceControlEvent[]): SurfaceRegisterProps {
 	return {
 		brightness: false,
 		...(controlEvents === undefined ? {} : { controlEvents }),
@@ -64,7 +64,7 @@ async function open(wrapper: PluginWrapper<unknown>) {
 }
 
 async function openReady(controlEvent: ControlEventFn) {
-	const wrapper = makePlugin({ surface: makeSurface(controlEvent), props: registerProps(true) })
+	const wrapper = makePlugin({ surface: makeSurface(controlEvent), props: registerProps(['press', 'hold']) })
 	const result = await open(wrapper)
 	await wrapper.readySurface('test-surface', {})
 	return { wrapper, connectionId: result.controlEvents!.connectionId }
@@ -79,13 +79,18 @@ describe('PluginWrapper control events', () => {
 		const methodOnlyResult = await open(makePlugin({ surface: makeSurface(methodOnly), props: registerProps() }))
 		expect(methodOnlyResult.controlEvents).toBeUndefined()
 
-		const capabilityOnlyResult = await open(makePlugin({ surface: makeSurface(), props: registerProps(true) }))
+		const capabilityOnlyResult = await open(
+			makePlugin({ surface: makeSurface(), props: registerProps(['press', 'hold']) }),
+		)
 		expect(capabilityOnlyResult.controlEvents).toBeUndefined()
+
+		const emptyListResult = await open(makePlugin({ surface: makeSurface(methodOnly), props: registerProps([]) }))
+		expect(emptyListResult.controlEvents).toBeUndefined()
 	})
 
 	it('passes the control and event to a ready surface, and drops them before ready', async () => {
 		const controlEvent = vi.fn<ControlEventFn>().mockResolvedValue(undefined)
-		const wrapper = makePlugin({ surface: makeSurface(controlEvent), props: registerProps(true) })
+		const wrapper = makePlugin({ surface: makeSurface(controlEvent), props: registerProps(['press', 'hold']) })
 		const result = await open(wrapper)
 		const connectionId = result.controlEvents?.connectionId
 		expect(connectionId).toEqual(expect.any(String))
@@ -100,6 +105,17 @@ describe('PluginWrapper control events', () => {
 			['0/1', 'press'],
 			['0/0', 'hold'],
 		])
+	})
+
+	it('only passes events the surface listed', async () => {
+		const controlEvent = vi.fn<ControlEventFn>().mockResolvedValue(undefined)
+		const wrapper = makePlugin({ surface: makeSurface(controlEvent), props: registerProps(['press']) })
+		const result = await open(wrapper)
+		await wrapper.readySurface('test-surface', {})
+
+		await wrapper.controlEvent('test-surface', result.controlEvents!.connectionId, '0/0', 'hold')
+		await wrapper.controlEvent('test-surface', result.controlEvents!.connectionId, '0/0', 'press')
+		expect(controlEvent.mock.calls).toEqual([['0/0', 'press']])
 	})
 
 	it('drops events for controls the surface does not have', async () => {
@@ -140,8 +156,8 @@ describe('PluginWrapper control events', () => {
 		const oldEvent = vi.fn<ControlEventFn>().mockResolvedValue(undefined)
 		const newEvent = vi.fn<ControlEventFn>().mockResolvedValue(undefined)
 		const wrapper = makePlugin(
-			{ surface: makeSurface(oldEvent), props: registerProps(true) },
-			{ surface: makeSurface(newEvent), props: registerProps(true) },
+			{ surface: makeSurface(oldEvent), props: registerProps(['press', 'hold']) },
+			{ surface: makeSurface(newEvent), props: registerProps(['press', 'hold']) },
 		)
 
 		const oldResult = await open(wrapper)
