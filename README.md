@@ -28,7 +28,11 @@ yarn unit
 
 ## Creating a Surface Plugin
 
-Use the [TypeScript template](https://github.com/bitfocus/companion-surface-template-ts) to get started.
+There is no template yet, as surface plugins vary a lot in how they find their devices. The easiest way to start is to copy whichever existing plugin is closest to what you need:
+
+- [xkeys](https://github.com/bitfocus/companion-surface-xkeys): a simple local HID device, discovered by Companion's own HID scanning (`checkSupportsHidDevice`)
+- [loupedeck](https://github.com/bitfocus/companion-surface-loupedeck): a local device that isn't HID (serial), which the plugin scans for itself (`scanForSurfaces`)
+- [elgato-stream-deck](https://github.com/bitfocus/companion-surface-elgato-stream-deck): local HID devices plus network-connected devices (`remote`), and it describes its models and their appearance
 
 Your plugin only needs to depend on `@companion-surface/base`. The host package is used by Companion itself.
 

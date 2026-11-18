@@ -33,7 +33,11 @@ export const MySurfacePlugin: SurfacePlugin = {
 }
 ```
 
-Check the [template repository](https://github.com/bitfocus/companion-surface-template-ts) for a complete example.
+For complete examples, look at an existing plugin that finds its devices the same way yours will:
+
+- [xkeys](https://github.com/bitfocus/companion-surface-xkeys): a simple local HID device, discovered by Companion's own HID scanning (`checkSupportsHidDevice`)
+- [loupedeck](https://github.com/bitfocus/companion-surface-loupedeck): a local device that isn't HID (serial), which the plugin scans for itself (`scanForSurfaces`)
+- [elgato-stream-deck](https://github.com/bitfocus/companion-surface-elgato-stream-deck): local HID devices plus network-connected devices (`remote`), and it describes its models and their appearance
 
 ## Supported Versions
 
