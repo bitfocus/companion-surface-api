@@ -2,72 +2,80 @@
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
 	"$id": "/assets/manifest.schema.json",
 	"title": "SurfaceModuleManifest",
-	"type": "object",
-	"properties": {
-		"$schema": { "type": "string" },
-		"type": { "type": "string", "enum": ["surface"], "description": "Type of module. Must be: surface" },
-		"id": {
-			"type": "string",
-			"pattern": "^((?!your-module-name)[\\s\\S])*$",
-			"description": "Unique identifier for the module"
-		},
-		"name": { "type": "string", "pattern": "^((?!your-module-name)[\\s\\S])*$", "description": "Name of the module" },
-		"shortname": { "type": "string", "pattern": "^((?!module-shortname)[\\s\\S])*$" },
-		"description": {
-			"type": "string",
-			"pattern": "^((?!A short one line description of your module)[\\s\\S])*$",
-			"description": "Description of the module"
-		},
-		"version": { "type": "string", "description": "Current version of the module" },
-		"isPrerelease": {
-			"description": "Is this a pre-release version. Note: this gets set by the build system",
-			"type": "boolean"
-		},
-		"license": { "type": "string", "description": "SPDX identifier for license of the module" },
-		"repository": { "type": "string", "description": "URL to the source repository" },
-		"bugs": { "type": "string", "description": "URL to bug tracker" },
-		"maintainers": {
-			"type": "array",
-			"items": { "$ref": "#/$defs/SurfaceModuleManifestMaintainer" },
-			"uniqueItems": true,
-			"description": "List of active maintainers"
-		},
-		"runtime": { "$ref": "#/$defs/SurfaceModuleManifestRuntime" },
-		"products": {
-			"minItems": 1,
-			"type": "array",
-			"items": { "type": "string", "pattern": "^((?!Your product)[\\s\\S])*$" },
-			"uniqueItems": true
-		},
-		"keywords": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
-		"usbIds": {
-			"type": "array",
-			"items": { "$ref": "#/$defs/SurfaceModuleManifestUsbIds" },
-			"uniqueItems": true,
-			"description": "List of USB vendor and product IDs that the module supports. Your module will only be notified of devices matching these IDs."
-		},
-		"allowMultipleInstances": {
-			"description": "Whether multiple instances of this module can be run simultaneously",
-			"type": "boolean"
-		}
-	},
-	"required": [
-		"type",
-		"id",
-		"name",
-		"shortname",
-		"description",
-		"version",
-		"license",
-		"repository",
-		"bugs",
-		"maintainers",
-		"runtime",
-		"products",
-		"keywords",
-		"usbIds"
-	],
+	"$ref": "#/$defs/SurfaceModuleManifest",
 	"$defs": {
+		"SurfaceModuleManifest": {
+			"type": "object",
+			"properties": {
+				"$schema": { "type": "string" },
+				"type": { "type": "string", "enum": ["surface"], "description": "Type of module. Must be: surface" },
+				"id": {
+					"type": "string",
+					"pattern": "^((?!your-module-name)[\\s\\S])*$",
+					"description": "Unique identifier for the module"
+				},
+				"name": {
+					"type": "string",
+					"pattern": "^((?!your-module-name)[\\s\\S])*$",
+					"description": "Name of the module"
+				},
+				"shortname": { "type": "string", "pattern": "^((?!module-shortname)[\\s\\S])*$" },
+				"description": {
+					"type": "string",
+					"pattern": "^((?!A short one line description of your module)[\\s\\S])*$",
+					"description": "Description of the module"
+				},
+				"version": { "type": "string", "description": "Current version of the module" },
+				"isPrerelease": {
+					"description": "Is this a pre-release version. Note: this gets set by the build system",
+					"type": "boolean"
+				},
+				"license": { "type": "string", "description": "SPDX identifier for license of the module" },
+				"repository": { "type": "string", "description": "URL to the source repository" },
+				"bugs": { "type": "string", "description": "URL to bug tracker" },
+				"maintainers": {
+					"type": "array",
+					"items": { "$ref": "#/$defs/SurfaceModuleManifestMaintainer" },
+					"uniqueItems": true,
+					"description": "List of active maintainers"
+				},
+				"runtime": { "$ref": "#/$defs/SurfaceModuleManifestRuntime" },
+				"products": {
+					"minItems": 1,
+					"type": "array",
+					"items": { "type": "string", "pattern": "^((?!Your product)[\\s\\S])*$" },
+					"uniqueItems": true
+				},
+				"keywords": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+				"usbIds": {
+					"type": "array",
+					"items": { "$ref": "#/$defs/SurfaceModuleManifestUsbIds" },
+					"uniqueItems": true,
+					"description": "List of USB vendor and product IDs that the module supports. Your module will only be notified of devices matching these IDs."
+				},
+				"allowMultipleInstances": {
+					"description": "Whether multiple instances of this module can be run simultaneously",
+					"type": "boolean"
+				}
+			},
+			"required": [
+				"type",
+				"id",
+				"name",
+				"shortname",
+				"description",
+				"version",
+				"license",
+				"repository",
+				"bugs",
+				"maintainers",
+				"runtime",
+				"products",
+				"keywords",
+				"usbIds"
+			],
+			"title": "SurfaceModuleManifest"
+		},
 		"SurfaceModuleManifestMaintainer": {
 			"type": "object",
 			"properties": {

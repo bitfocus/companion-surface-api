@@ -2,24 +2,28 @@
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
 	"$id": "/assets/surface-layout.schema.json",
 	"title": "SurfaceSchemaLayoutDefinition",
-	"type": "object",
-	"properties": {
-		"stylePresets": {
-			"type": "object",
-			"properties": { "default": { "$ref": "#/$defs/SurfaceSchemaControlStylePreset" } },
-			"required": ["default"],
-			"additionalProperties": { "$ref": "#/$defs/SurfaceSchemaControlStylePreset" },
-			"description": "Named collection of style presets. The preset named `default` is required and is used as the fallback style for controls when no `stylePreset` is specified."
-		},
-		"controls": {
-			"type": "object",
-			"propertyNames": { "type": "string", "pattern": "^[a-zA-Z0-9\\-/]+$" },
-			"additionalProperties": { "$ref": "#/$defs/SurfaceSchemaControlDefinition" }
-		}
-	},
-	"required": ["stylePresets", "controls"],
-	"description": "Schema describing a surface layout: default styling and a map of controls with positions and optional style overrides.",
+	"$ref": "#/$defs/SurfaceSchemaLayoutDefinition",
 	"$defs": {
+		"SurfaceSchemaLayoutDefinition": {
+			"type": "object",
+			"properties": {
+				"stylePresets": {
+					"type": "object",
+					"properties": { "default": { "$ref": "#/$defs/SurfaceSchemaControlStylePreset" } },
+					"required": ["default"],
+					"additionalProperties": { "$ref": "#/$defs/SurfaceSchemaControlStylePreset" },
+					"description": "Named collection of style presets. The preset named `default` is required and is used as the fallback style for controls when no `stylePreset` is specified."
+				},
+				"controls": {
+					"type": "object",
+					"propertyNames": { "type": "string", "pattern": "^[a-zA-Z0-9\\-/]+$" },
+					"additionalProperties": { "$ref": "#/$defs/SurfaceSchemaControlDefinition" }
+				}
+			},
+			"required": ["stylePresets", "controls"],
+			"description": "Schema describing a surface layout: default styling and a map of controls with positions and optional style overrides.",
+			"title": "SurfaceSchemaLayoutDefinition"
+		},
 		"SurfaceSchemaControlStylePreset": {
 			"type": "object",
 			"properties": {
