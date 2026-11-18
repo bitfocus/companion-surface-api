@@ -1,7 +1,6 @@
 {
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
 	"$id": "/assets/manifest.schema.json",
-	"title": "SurfaceModuleManifest",
 	"$ref": "#/$defs/SurfaceModuleManifest",
 	"$defs": {
 		"SurfaceModuleManifest": {

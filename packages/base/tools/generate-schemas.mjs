@@ -24,7 +24,7 @@ function stripClosedObjects(ctx) {
 	}
 }
 
-async function writeSchema(schema, relativePath, title) {
+async function writeSchema(schema, relativePath) {
 	const jsonSchema = z.toJSONSchema(schema, {
 		target: 'draft-2020-12',
 		// `.refine()`-based constraints (eg uniqueItems) cannot be represented in
@@ -37,7 +37,6 @@ async function writeSchema(schema, relativePath, title) {
 	const output = {
 		$schema: 'https://json-schema.org/draft/2020-12/schema',
 		$id: relativePath,
-		title,
 		...jsonSchema,
 	}
 
@@ -53,10 +52,6 @@ async function writeSchema(schema, relativePath, title) {
 
 // The published manifest schema is the *strict* one, so that editors flag any
 // leftover module-template placeholders while a module is being developed.
-await writeSchema(buildManifestSchema(true), '/assets/manifest.schema.json', 'SurfaceModuleManifest')
-await writeSchema(surfaceLayoutSchema, '/assets/surface-layout.schema.json', 'SurfaceSchemaLayoutDefinition')
-await writeSchema(
-	surfaceAppearanceSchema,
-	'/assets/surface-appearance.schema.json',
-	'SurfaceSchemaAppearanceDefinition',
-)
+await writeSchema(buildManifestSchema(true), '/assets/manifest.schema.json')
+await writeSchema(surfaceLayoutSchema, '/assets/surface-layout.schema.json')
+await writeSchema(surfaceAppearanceSchema, '/assets/surface-appearance.schema.json')
