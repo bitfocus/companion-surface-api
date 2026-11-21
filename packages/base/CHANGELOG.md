@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.4.1...companion-surface-base-v1.5.0) (2026-11-21)
+
+
+### Features
+
+* let surfaces describe their face, and plugins declare their models ([#89](https://github.com/bitfocus/companion-surface-api/issues/89)) ([0afe929](https://github.com/bitfocus/companion-surface-api/commit/0afe929668d2ee9ed09aac70014ef6093983adb2))
+* optional per control events for surfaces ([#90](https://github.com/bitfocus/companion-surface-api/issues/90)) ([1e3906f](https://github.com/bitfocus/companion-surface-api/commit/1e3906f6b3030e37ace1151f5326fa52f1890840))
+
+
+### Bug Fixes
+
+* better types for json values ([1a17c33](https://github.com/bitfocus/companion-surface-api/commit/1a17c33d11ec640995ad923bb12afea207b8767f))
+* variable values can be undefined ([81ceb81](https://github.com/bitfocus/companion-surface-api/commit/81ceb819c97fb366158e95c30101891b4b0bf682))
+
 ## [1.4.1](https://github.com/bitfocus/companion-surface-api/compare/companion-surface-base-v1.4.0...companion-surface-base-v1.4.1) (2026-10-03)
 
 
