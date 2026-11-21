@@ -197,7 +197,7 @@ export class SurfaceProxy {
 		})
 	}
 
-	onVariableValue(name: string, value: JsonValue): void {
+	onVariableValue(name: string, value: JsonValue | undefined): void {
 		if (BANNED_PROPS.has(name)) {
 			this.#logger.warn(`Variable name "${name}" is a reserved word`)
 			return
@@ -540,7 +540,7 @@ export class SurfaceProxyContext implements SurfaceContext {
 		this.#host.surfaceEvents.changePage(this.#surfaceId, forward)
 	}
 
-	sendVariableValue(variable: string, value: JsonValue): void {
+	sendVariableValue(variable: string, value: JsonValue | undefined): void {
 		if (this.#isLocked) return
 
 		if (BANNED_PROPS.has(variable)) {

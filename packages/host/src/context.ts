@@ -53,7 +53,7 @@ export interface HostSurfaceEvents {
 
 	readonly changePage: (surfaceId: string, forward: boolean) => void
 
-	readonly setVariableValue: (surfaceId: string, name: string, value: JsonValue) => void
+	readonly setVariableValue: (surfaceId: string, name: string, value: JsonValue | undefined) => void
 
 	readonly pincodeEntry: (surfaceId: string, char: number) => void
 

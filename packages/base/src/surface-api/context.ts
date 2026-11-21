@@ -83,5 +83,5 @@ export interface SurfaceContext {
 	 * @param variable Name of the variable
 	 * @param value Value of the variable
 	 */
-	sendVariableValue(variable: string, value: JsonValue): void
+	sendVariableValue(variable: string, value: JsonValue | undefined): void
 }

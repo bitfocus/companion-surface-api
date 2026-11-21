@@ -73,7 +73,7 @@ export interface SurfaceInstance {
 	 * @param name Name of the variable
 	 * @param value New value of the variable
 	 */
-	onVariableValue?(name: string, value: JsonValue): void
+	onVariableValue?(name: string, value: JsonValue | undefined): void
 
 	/**
 	 * Show the locked status of the surface for pincode entry
