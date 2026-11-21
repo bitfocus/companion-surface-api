@@ -2,6 +2,7 @@ import {
 	type HostCapabilities,
 	type ControlId,
 	type SurfaceContext,
+	type SurfaceControlEvent,
 	type SurfaceDrawProps,
 	type SurfaceId,
 	type SurfaceInstance,
@@ -36,6 +37,8 @@ export class SurfaceProxy {
 	readonly #registerProps: SurfaceRegisterProps
 
 	readonly #drawQueue: DrawingState
+	#controlEventsConnectionId: string | undefined
+	#isReady = false
 
 	#pincodeCharacterCount = 0
 	#pincodeRotation: SurfaceRotation = 0
@@ -50,18 +53,23 @@ export class SurfaceProxy {
 	get registerProps(): SurfaceRegisterProps {
 		return this.#registerProps
 	}
+	get controlEventsConnectionId(): string | undefined {
+		return this.#controlEventsConnectionId
+	}
 
 	constructor(
 		host: SurfaceHostContext,
 		context: SurfaceProxyContext,
 		surface: SurfaceInstance,
 		registerProps: SurfaceRegisterProps,
+		controlEventsConnectionId: string | undefined,
 	) {
 		this.#logger = createModuleLogger(`SurfaceProxy/${surface.surfaceId}`)
 		this.#host = host
 		this.#context = context
 		this.#surface = surface
 		this.#registerProps = registerProps
+		this.#controlEventsConnectionId = controlEventsConnectionId
 
 		this.#drawQueue = new DrawingState(this.surfaceId, 'preinit')
 
@@ -70,6 +78,8 @@ export class SurfaceProxy {
 	}
 
 	async close(): Promise<void> {
+		this.#controlEventsConnectionId = undefined
+		this.#isReady = false
 		this.#drawQueue.abortQueued('closed')
 
 		return this.#surface.close()
@@ -95,13 +105,45 @@ export class SurfaceProxy {
 	}
 
 	async readySurface(config: JsonObject): Promise<void> {
+		this.#isReady = false
 		this.#drawQueue.abortQueued('reinit')
 
 		if (this.#surface.updateConfig) {
 			await this.#surface.updateConfig(config)
 		}
 
-		return this.#surface.ready()
+		await this.#surface.ready()
+		this.#isReady = true
+	}
+
+	/**
+	 * Pass an event for one control to the surface, for the matching open connection.
+	 *
+	 * This deliberately bypasses the draw queue, and resolves once the surface has taken
+	 * the event or it was dropped. Events while the surface is initialising, reinitialising
+	 * or locked, and events for unknown controls, are dropped and never replayed.
+	 */
+	async controlEvent(connectionId: string, controlId: ControlId, event: SurfaceControlEvent): Promise<void> {
+		if (
+			this.#controlEventsConnectionId !== connectionId ||
+			!this.#isReady ||
+			this.#context.isLocked ||
+			!this.#registerProps.controlEvents?.includes(event) ||
+			!this.#surface.controlEvent
+		) {
+			return
+		}
+
+		if (BANNED_PROPS.has(controlId) || !this.#registerProps.surfaceLayout.controls[controlId]) {
+			this.#logger.warn(`Dropping control event for unknown controlId: ${controlId}`)
+			return
+		}
+
+		try {
+			await this.#surface.controlEvent(controlId, event)
+		} catch (e) {
+			this.#logger.warn(`Control event failed: ${e}`)
+		}
 	}
 
 	async setBrightness(percent: number): Promise<void> {

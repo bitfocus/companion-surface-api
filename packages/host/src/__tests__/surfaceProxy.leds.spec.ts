@@ -40,7 +40,7 @@ function makeProxy() {
 		configFields: null,
 	}
 
-	const proxy = new SurfaceProxy(host, context, surface, registerProps)
+	const proxy = new SurfaceProxy(host, context, surface, registerProps, undefined)
 	return { proxy, surface }
 }
 

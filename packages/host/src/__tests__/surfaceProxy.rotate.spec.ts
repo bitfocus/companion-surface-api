@@ -33,7 +33,7 @@ function makeContext() {
 
 	const context = new SurfaceProxyContext(host, 'surf1', vi.fn())
 	// The SurfaceProxy constructor registers itself with the context via storeSurface
-	new SurfaceProxy(host, context, surface, registerProps)
+	new SurfaceProxy(host, context, surface, registerProps, undefined)
 
 	return { context, inputRotate }
 }

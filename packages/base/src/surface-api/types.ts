@@ -29,6 +29,15 @@ export type SurfaceId = string
 export type ControlId = string
 
 /**
+ * Something Companion did in response to physical input on a control, which a surface may choose to show.
+ * - `press`: a press of the control ran an action group, either on press or on release
+ * - `hold`: an action group set to run while the control is held has fired, while it is still held
+ *
+ * More events may be added in future, so surfaces should ignore any they don't recognise.
+ */
+export type SurfaceControlEvent = 'press' | 'hold'
+
+/**
  * Definition of a varaible produced by a surface
  */
 export interface SurfaceInputVariable {
@@ -55,6 +64,13 @@ export interface SurfaceRegisterProps {
 	 * Whether the surface supports setting brightness
 	 */
 	brightness: boolean
+	/**
+	 * The control events this opened surface can show, such as a press running actions.
+	 * Only events in this list are sent to the surface.
+	 *
+	 * Omitted or empty means none. When non-empty, the SurfaceInstance must also implement controlEvent.
+	 */
+	controlEvents?: SurfaceControlEvent[]
 	/**
 	 * The definition of the controls on the surface and the properties needed for drawing
 	 */
